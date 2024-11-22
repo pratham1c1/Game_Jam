@@ -1,0 +1,26 @@
+.card{
+    background-color: black;
+    width: 298px;
+    height: 233px;
+    color: aliceblue;
+    border-radius: 10px;
+    margin: 25px 12px 25px 5px
+}
+
+.card_title{
+    background-color: rgb(35 89 22);
+    display: grid;
+    place-items: center;
+    height: 70%;
+    font-size: 30px;
+    border-radius: 10px;
+}
+
+.card_value{
+    background-color: #317676;
+    display: grid;
+    height: 30%;
+    font-size: 20px;
+    place-items: center;
+    border-radius: 10px;
+}
