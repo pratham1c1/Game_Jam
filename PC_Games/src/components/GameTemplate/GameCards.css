@@ -4,7 +4,21 @@
     height: 233px;
     color: rgb(41, 59, 74);
     border-radius: 10px;
-    margin: 25px 12px 25px 5px
+    margin: 25px 12px 25px 5px;
+    position:relative;
+}
+
+.card_cancel_button{
+    position: absolute;
+    left: 258px;
+    top: 0px;
+    background: #00000052;
+    border-color: white;
+    border-radius: 6px;
+    color: #ff0000;
+    width: 40px;
+    align-items: center;
+    display: flex;
 }
 
 .card_title {
@@ -33,4 +47,17 @@
     font-size: 20px;
     place-items: center;
     border-radius: 10px;
+}
+/* -------------------------------------------- */
+/* Popup */
+.successfulPopup{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }

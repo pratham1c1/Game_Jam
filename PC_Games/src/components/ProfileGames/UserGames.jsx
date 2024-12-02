@@ -15,30 +15,60 @@ function UserGames() {
         gameSecondSs:null,
         gameFile:null
     });
+    const resetFormData = () => {
+        setFormData({
+            gameName: "",
+            gameVideoLink: "",
+            gameImage: null,
+            gameFirstSs: null,
+            gameSecondSs: null,
+            gameFile: null,
+        });
+    };
+    const[gameDeleteFlag,setGameDeleteFlag] = useState(false);
 
     const displayForm = () => {
-        setDisplayVar(!displayVar); // Toggle the form
+        if (displayVar) {
+            resetFormData(); // Clear the form when it's being closed
+        } else {
+            const formContainer = document.querySelector('.UserForm');
+            if (formContainer) {
+                formContainer.scrollTop = 0; // Reset the container's scroll position
+            }
+        }
+        setDisplayVar(!displayVar); // Toggle the form's visibility
     };
+
     const fetchGames = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/api/userGames/getAllGames/${userName}`);
             
+            if (!response.data) {
+                console.error("No games data found.");
+                setGames([]); // Set an empty array if no data is returned
+                return;
+            }
+    
             // Map and process the data
             const gamesWithImageURL = response.data.map((game) => ({
                 ...game,
-                gameImageUrl: `data:image/png;base64,${game.gameImage.data}` // Decode base64 image
+                gameImageUrl: game.gameImage && game.gameImage.data
+                    ? `data:image/png;base64,${game.gameImage.data}` // Use the base64 image if available
+                    : `/no_image.png` // Fallback to the public 'no_image.png'
             }));
-
+    
             setGames(gamesWithImageURL); // Set processed data to state
         } catch (error) {
             console.error("Error fetching games:", error);
             alert("Failed to load games.");
         }
     };
+    
 
     useEffect(() => {
+        console.log("Fetching games ...");
         fetchGames();
-    }, []);
+    }, [gameDeleteFlag]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -56,6 +86,7 @@ function UserGames() {
         }));
     };
 
+    // Add Games  
     const handleSubmit = async (e) => {
         e.preventDefault();
         const data = new FormData();
@@ -85,6 +116,7 @@ function UserGames() {
             console.log("Game added successfully:", response.data);
             alert("Game added successfully!");
             fetchGames();
+            resetFormData(); //Resetting the game-form fields
         }catch(e){
             console.error("Error Uploading data !" , e);
             alert("Upload Failed..");
@@ -111,6 +143,7 @@ function UserGames() {
                                 key={game.gameId}
                                 title={<img src={game.gameImageUrl} alt={game.gameName} style={{ width: '100%', height: '100%' }} />}
                                 description={game.gameName}
+                                setGameDeleteFlag={setGameDeleteFlag}
                             />
                         ))
                     ) : (
@@ -118,72 +151,72 @@ function UserGames() {
                     )}
                 </div>
                 <div className="UserForm" style={{ display: displayVar ? 'block' : 'none' }}>
-                <form onSubmit={handleSubmit}>
-                    {/* Game Name */}
-                    <label htmlFor="gameName">Game Name:</label><br />
-                    <input
-                        type="text"
-                        id="gameName"
-                        name="gameName"
-                        value={formData.gameName}
-                        onChange={handleChange}
-                        required
-                    /><br />
+                    <form onSubmit={handleSubmit} className="game-form">
+                        {/* Game Name */}
+                        <label htmlFor="gameName">Game Name:</label>
+                        <input
+                            type="text"
+                            id="gameName"
+                            name="gameName"
+                            value={formData.gameName}
+                            onChange={handleChange}
+                            required
+                        />
 
-                    {/* Game Video Link */}
-                    <label htmlFor="gameVideoLink">Game Video Link:</label><br />
-                    <input
-                        type="text"
-                        id="gameVideoLink"
-                        name="gameVideoLink"
-                        value={formData.gameVideoLink}
-                        onChange={handleChange}
-                    /><br />
+                        {/* Game Video Link */}
+                        <label htmlFor="gameVideoLink">Game Video Link:</label>
+                        <input
+                            type="text"
+                            id="gameVideoLink"
+                            name="gameVideoLink"
+                            value={formData.gameVideoLink}
+                            onChange={handleChange}
+                        />
 
-                    {/* Game Image */}
-                    <label htmlFor="gameImage">Game Image:</label><br />
-                    <input
-                        type="file"
-                        id="gameImage"
-                        name="gameImage"
-                        accept="image/*"
-                        onChange={(e) => handleFileChange(e, 'gameImage')}
-                    /><br />
+                        {/* Game Image */}
+                        <label htmlFor="gameImage">Game Image:</label>
+                        <input
+                            type="file"
+                            id="gameImage"
+                            name="gameImage"
+                            accept="image/*"
+                            onChange={(e) => handleFileChange(e, 'gameImage')}
+                        />
 
-                    {/* Game First Screenshot */}
-                    <label htmlFor="gameFirstSs">Game First Screenshot:</label><br />
-                    <input
-                        type="file"
-                        id="gameFirstSs"
-                        name="gameFirstSs"
-                        accept="image/*"
-                        onChange={(e) => handleFileChange(e, 'gameFirstSs')}
-                    /><br />
+                        {/* Game First Screenshot */}
+                        <label htmlFor="gameFirstSs">Game First Screenshot:</label>
+                        <input
+                            type="file"
+                            id="gameFirstSs"
+                            name="gameFirstSs"
+                            accept="image/*"
+                            onChange={(e) => handleFileChange(e, 'gameFirstSs')}
+                        />
 
-                    {/* Game Second Screenshot */}
-                    <label htmlFor="gameSecondSs">Game Second Screenshot:</label><br />
-                    <input
-                        type="file"
-                        id="gameSecondSs"
-                        name="gameSecondSs"
-                        accept="image/*"
-                        onChange={(e) => handleFileChange(e, 'gameSecondSs')}
-                    /><br />
+                        {/* Game Second Screenshot */}
+                        <label htmlFor="gameSecondSs">Game Second Screenshot:</label>
+                        <input
+                            type="file"
+                            id="gameSecondSs"
+                            name="gameSecondSs"
+                            accept="image/*"
+                            onChange={(e) => handleFileChange(e, 'gameSecondSs')}
+                        />
 
-                    {/* Game File */}
-                    <label htmlFor="gameFile">Game File (ZIP):</label><br />
-                    <input
-                        type="file"
-                        id="gameFile"
-                        name="gameFile"
-                        accept=".zip"
-                        onChange={(e) => handleFileChange(e, 'gameFile')}
-                    /><br /><br />
+                        {/* Game File */}
+                        <label htmlFor="gameFile">Game File (ZIP):</label>
+                        <input
+                            type="file"
+                            id="gameFile"
+                            name="gameFile"
+                            accept=".zip"
+                            onChange={(e) => handleFileChange(e, 'gameFile')}
+                        />
 
-                    <input type="submit" value="Submit" />
-                </form>
-
+                        <button type="submit" className="submit-button">Submit</button>
+                    </form>
                 </div>
+
             </div>
         </>
     );
