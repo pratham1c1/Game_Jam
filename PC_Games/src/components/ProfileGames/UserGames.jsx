@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from "react";
 import GameCards from '../GameTemplate/GameCards';
 import './UserGames.css';
 import axios from "axios"
+import PopupForm from '../PopupForm/PopupForm';
 
 function UserGames() {
     const [games, setGames] = useState([]);
-    const [displayVar, setDisplayVar] = useState(false);
     const [userName, setUserName] = useState("PC");
+    const [isPopupVisible , setPopupVisible] = useState(0);
+    const popupRef = useRef(null);
     const [formData, setFormData] = useState({
         gameName: "",
         gameVideoLink: "",
@@ -28,15 +30,11 @@ function UserGames() {
     const[gameDeleteFlag,setGameDeleteFlag] = useState(false);
 
     const displayForm = () => {
-        if (displayVar) {
+        if (isPopupVisible) {
             resetFormData(); // Clear the form when it's being closed
-        } else {
-            const formContainer = document.querySelector('.UserForm');
-            if (formContainer) {
-                formContainer.scrollTop = 0; // Reset the container's scroll position
-            }
         }
-        setDisplayVar(!displayVar); // Toggle the form's visibility
+        isPopupVisible === 0 ? setPopupVisible(1) : setPopupVisible(0);
+
     };
 
     const fetchGames = async () => {
@@ -66,9 +64,36 @@ function UserGames() {
     
 
     useEffect(() => {
-        console.log("Fetching games ...");
+        console.log("Fetching games ...with isPopupVisible : " , isPopupVisible);
         fetchGames();
-    }, [gameDeleteFlag]);
+        if (isPopupVisible !== 0) {
+            document.getElementById("mainPageId").style.webkitFilter = "blur(4px)";
+            document.body.style.overflowY = 'hidden';
+            document.getElementById("pagePopuId").style.animation = "popupAnimationOpen 0.5s linear";
+            document.getElementById("pagePopuId").style.animationFillMode = 'forwards';
+      
+            // Add event listener to detect clicks outside the popup
+            const handleClickOutside = (event) => {
+              console.log("popup current : " , popupRef.current , " & contains : " , event.target);
+              if (popupRef.current && !popupRef.current.contains(event.target)) {
+                  document.getElementById("pagePopuId").style.animation = "popupAnimationClose 0.5s linear";
+                  document.getElementById("mainPageId").style.webkitFilter = "blur(0px)";
+                  document.body.style.overflowY = 'scroll';
+                  setPopupVisible(0);
+              }
+            };
+      
+            document.addEventListener('mousedown', handleClickOutside);
+            
+            // Clean up the event listener on component unmount or when isPopupVisible changes
+            return () => {
+              document.removeEventListener('mousedown', handleClickOutside);
+            };
+          } else {
+            document.getElementById("mainPageId").style.webkitFilter = "";
+            document.body.style.overflowY = 'auto';
+          }
+    }, [isPopupVisible,gameDeleteFlag]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -113,6 +138,7 @@ function UserGames() {
                     "Content-Type": "multipart/form-data"
                 }
             });
+            isPopupVisible === 0 ? setPopupVisible(1) : setPopupVisible(0);
             console.log("Game added successfully:", response.data);
             alert("Game added successfully!");
             fetchGames();
@@ -136,7 +162,7 @@ function UserGames() {
                         <button onClick={displayForm}>Add</button>
                     </div>
                 </div>
-                <div className="Games">
+                <div id='mainPageId' className="Games">
                     {games.length > 0 ? (
                         games.map((game) => (
                             <GameCards
@@ -150,71 +176,8 @@ function UserGames() {
                         <p>No games available.</p>
                     )}
                 </div>
-                <div className="UserForm" style={{ display: displayVar ? 'block' : 'none' }}>
-                    <form onSubmit={handleSubmit} className="game-form">
-                        {/* Game Name */}
-                        <label htmlFor="gameName">Game Name:</label>
-                        <input
-                            type="text"
-                            id="gameName"
-                            name="gameName"
-                            value={formData.gameName}
-                            onChange={handleChange}
-                            required
-                        />
-
-                        {/* Game Video Link */}
-                        <label htmlFor="gameVideoLink">Game Video Link:</label>
-                        <input
-                            type="text"
-                            id="gameVideoLink"
-                            name="gameVideoLink"
-                            value={formData.gameVideoLink}
-                            onChange={handleChange}
-                        />
-
-                        {/* Game Image */}
-                        <label htmlFor="gameImage">Game Image:</label>
-                        <input
-                            type="file"
-                            id="gameImage"
-                            name="gameImage"
-                            accept="image/*"
-                            onChange={(e) => handleFileChange(e, 'gameImage')}
-                        />
-
-                        {/* Game First Screenshot */}
-                        <label htmlFor="gameFirstSs">Game First Screenshot:</label>
-                        <input
-                            type="file"
-                            id="gameFirstSs"
-                            name="gameFirstSs"
-                            accept="image/*"
-                            onChange={(e) => handleFileChange(e, 'gameFirstSs')}
-                        />
-
-                        {/* Game Second Screenshot */}
-                        <label htmlFor="gameSecondSs">Game Second Screenshot:</label>
-                        <input
-                            type="file"
-                            id="gameSecondSs"
-                            name="gameSecondSs"
-                            accept="image/*"
-                            onChange={(e) => handleFileChange(e, 'gameSecondSs')}
-                        />
-
-                        {/* Game File */}
-                        <label htmlFor="gameFile">Game File (ZIP):</label>
-                        <input
-                            type="file"
-                            id="gameFile"
-                            name="gameFile"
-                            accept=".zip"
-                            onChange={(e) => handleFileChange(e, 'gameFile')}
-                        />
-
-                        <button type="submit" className="submit-button">Submit</button>
-                    </form>
+                <div className="UserForm" style={{ display: isPopupVisible ? 'block' : 'none' }}>
+                    <div id="pagePopuId" ref={popupRef} className="pagePopupForm"><PopupForm setpopupDiv = {setPopupVisible} formData={formData} setFormData={setFormData} resetFormData={resetFormData} handleChange={handleChange} handleSubmit={handleSubmit} handleFileChange={handleFileChange}/></div>
                 </div>
 
             </div>
