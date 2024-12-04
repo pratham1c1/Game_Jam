@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
-import GameCards from '../GameTemplate/GameCards';
+import GameCards from '../../components/GameTemplate/GameCards';
 import './UserGames.css';
 import axios from "axios"
-import PopupForm from '../PopupForm/PopupForm';
+import PopupForm from '../../components/PopupForm/PopupForm';
 
 function UserGames() {
     const [games, setGames] = useState([]);
@@ -12,7 +12,7 @@ function UserGames() {
     const [formData, setFormData] = useState({
         gameName: "",
         gameVideoLink: "",
-        gameImage:null,
+        gameCoverImage:null,
         gameFirstSs:null,
         gameSecondSs:null,
         gameFile:null
@@ -21,7 +21,7 @@ function UserGames() {
         setFormData({
             gameName: "",
             gameVideoLink: "",
-            gameImage: null,
+            gameCoverImage: null,
             gameFirstSs: null,
             gameSecondSs: null,
             gameFile: null,
@@ -50,8 +50,8 @@ function UserGames() {
             // Map and process the data
             const gamesWithImageURL = response.data.map((game) => ({
                 ...game,
-                gameImageUrl: game.gameImage && game.gameImage.data
-                    ? `data:image/png;base64,${game.gameImage.data}` // Use the base64 image if available
+                gameCoverImageUrl: game.gameCoverImage && game.gameCoverImage.data
+                    ? `data:image/png;base64,${game.gameCoverImage.data}` // Use the base64 image if available
                     : `/no_image.png` // Fallback to the public 'no_image.png'
             }));
     
@@ -121,7 +121,7 @@ function UserGames() {
     data.append("userName", userName); // Add the username to the request
     data.append("gameVideoLink", formData.gameVideoLink);
 
-    if (formData.gameImage) data.append("gameImage", formData.gameImage);
+    if (formData.gameCoverImage) data.append("gameCoverImage", formData.gameCoverImage);
     if (formData.gameFirstScreenshot) data.append("gameFirstSs", formData.gameFirstSs); // Renamed
     if (formData.gameSecondScreenshot) data.append("gameSecondSs", formData.gameSecondSs); // Renamed
     if (formData.gameFile) data.append("gameFile", formData.gameFile);
@@ -167,7 +167,7 @@ function UserGames() {
                         games.map((game) => (
                             <GameCards
                                 key={game.gameId}
-                                title={<img src={game.gameImageUrl} alt={game.gameName} style={{ width: '100%', height: '100%' }} />}
+                                title={<img src={game.gameCoverImageUrl} alt={game.gameName} style={{ width: '100%', height: '100%' }} />}
                                 description={game.gameName}
                                 setGameDeleteFlag={setGameDeleteFlag}
                             />

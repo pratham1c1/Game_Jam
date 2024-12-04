@@ -49,14 +49,14 @@ function PopupForm(props){
                         />
 
                         {/* Game Image */}
-                        <label className='formLabel'htmlFor="gameImage">Game Image:</label>
+                        <label className='formLabel'htmlFor="gameCoverImage">Game Cover Image:</label>
                         <input
                             className='formInput'
                             type="file"
-                            id="gameImage"
-                            name="gameImage"
+                            id="gameCoverImage"
+                            name="gameCoverImage"
                             accept="image/*"
-                            onChange={(e) => handleFileChange(e, 'gameImage')}
+                            onChange={(e) => handleFileChange(e, 'gameCoverImage')}
                         />
 
                         {/* Game First Screenshot */}
