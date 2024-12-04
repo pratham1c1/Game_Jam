@@ -3,10 +3,11 @@ import { useEffect, useState } from "react"
 import './GameDetails.css'
 
 function GameDetails(props){
+    const [gameDetails, setGameDetails] = useState(null);
     const [gameCoverImage, setGameCoverImage] = useState(null);
     const [gameFirstSs, setGameFirstSs] = useState(null);
     const [gameSecondSs, setGameSecondSs] = useState(null);
-    const[gameName, setGameName] = useState("1st Game"); // props.gameName
+    const[gameName, setGameName] = useState("2nd Game"); // props.gameName
     
 
     const fetchGames = async () => {
@@ -17,6 +18,7 @@ function GameDetails(props){
                 console.error("No games data found.");
                 return;
             }
+            setGameDetails(response.data);
     
             // Map and gameCoverImage
             const gamesWithImageURL = response.data.gameCoverImage && response.data.gameCoverImage.data
@@ -25,13 +27,13 @@ function GameDetails(props){
             ;
             setGameCoverImage(gamesWithImageURL); // Set processed data to state
             //Set gameFirstSs
-            setGameFirstSs(response.data.gameFirstSs && response.data.gameFirstSs.data
-                ? `data:image/png;base64,${response.data.gameFirstSs.data}` // Use the base64 image if available
+            setGameFirstSs(response.data.gameFirstScreenshot && response.data.gameFirstScreenshot.data
+                ? `data:image/png;base64,${response.data.gameFirstScreenshot.data}` // Use the base64 image if available
                     : `/no_image.png` // Fallback to the public 'no_image.png' 
             )
             // Set gameSecondSs
-            setGameFirstSs(response.data.gameSecondSs && response.data.gameSecondSs.data
-                ? `data:image/png;base64,${response.data.gameSecondSs.data}` // Use the base64 image if available
+            setGameSecondSs(response.data.gameSecondScreenshot && response.data.gameSecondScreenshot.data
+                ? `data:image/png;base64,${response.data.gameSecondScreenshot.data}` // Use the base64 image if available
                     : `/no_image.png` // Fallback to the public 'no_image.png' 
             )
         } catch (error) {
@@ -59,7 +61,11 @@ function GameDetails(props){
                             <div className="SecondGameScreenshot" style={{backgroundImage : `url(${gameSecondSs})`}}></div>
                         </div>
                     </div>
-                    <div className="GameDetails"></div>
+                    <div className="GameDetails">
+                        <h3>Game Name : {gameDetails.gameName}</h3>
+                        <h3>Description : {gameDetails.gameDescription}</h3>
+                        <h3>Install Instruction : {gameDetails.gameInstallInstruction}</h3>
+                    </div>
                 </div>
                 <div className="GameComments"></div>
             </div>

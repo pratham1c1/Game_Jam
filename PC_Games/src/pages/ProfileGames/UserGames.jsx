@@ -9,22 +9,37 @@ function UserGames() {
     const [userName, setUserName] = useState("PC");
     const [isPopupVisible , setPopupVisible] = useState(0);
     const popupRef = useRef(null);
+    const fileInputRefs = useRef({});
     const [formData, setFormData] = useState({
         gameName: "",
+        gameDescription:"",
+        gameInstallInstruc:"",
         gameVideoLink: "",
         gameCoverImage:null,
         gameFirstSs:null,
         gameSecondSs:null,
+        gameBackgroundImage:null,
         gameFile:null
     });
     const resetFormData = () => {
+
+        // Reset file inputs via refs
+        Object.values(fileInputRefs.current).forEach((input) => {
+            if (input) {
+                input.value = ""; // Reset the file input to empty
+            }
+        });
+
         setFormData({
             gameName: "",
-            gameVideoLink: "",
-            gameCoverImage: null,
-            gameFirstSs: null,
-            gameSecondSs: null,
-            gameFile: null,
+        gameDescription:"",
+        gameInstallInstruc:"",
+        gameVideoLink: "",
+        gameCoverImage:null,
+        gameFirstSs:null,
+        gameSecondSs:null,
+        gameBackgroundImage:null,
+        gameFile:null
         });
     };
     const[gameDeleteFlag,setGameDeleteFlag] = useState(false);
@@ -79,6 +94,7 @@ function UserGames() {
                   document.getElementById("pagePopuId").style.animation = "popupAnimationClose 0.5s linear";
                   document.getElementById("mainPageId").style.webkitFilter = "blur(0px)";
                   document.body.style.overflowY = 'scroll';
+                  resetFormData();
                   setPopupVisible(0);
               }
             };
@@ -120,10 +136,11 @@ function UserGames() {
     data.append("gameName", formData.gameName);
     data.append("userName", userName); // Add the username to the request
     data.append("gameVideoLink", formData.gameVideoLink);
-
+    data.append("gameDescription" , formData.gameDescription);
+    data.append("gameInstallInstruc" , formData.gameInstallInstruc);
     if (formData.gameCoverImage) data.append("gameCoverImage", formData.gameCoverImage);
-    if (formData.gameFirstScreenshot) data.append("gameFirstSs", formData.gameFirstSs); // Renamed
-    if (formData.gameSecondScreenshot) data.append("gameSecondSs", formData.gameSecondSs); // Renamed
+    if (formData.gameFirstSs) data.append("gameFirstSs", formData.gameFirstSs); // Renamed
+    if (formData.gameSecondSs) data.append("gameSecondSs", formData.gameSecondSs); // Renamed
     if (formData.gameFile) data.append("gameFile", formData.gameFile);
         
         // Debugging: Log all key-value pairs in FormData
@@ -177,7 +194,7 @@ function UserGames() {
                     )}
                 </div>
                 <div className="UserForm" style={{ display: isPopupVisible ? 'block' : 'none' }}>
-                    <div id="pagePopuId" ref={popupRef} className="pagePopupForm"><PopupForm setpopupDiv = {setPopupVisible} formData={formData} setFormData={setFormData} resetFormData={resetFormData} handleChange={handleChange} handleSubmit={handleSubmit} handleFileChange={handleFileChange}/></div>
+                    <div id="pagePopuId" ref={popupRef} className="pagePopupForm"><PopupForm setpopupDiv = {setPopupVisible} formData={formData} setFormData={setFormData} resetFormData={resetFormData} handleChange={handleChange} handleSubmit={handleSubmit} handleFileChange={handleFileChange} fileInputRefs={fileInputRefs}/></div>
                 </div>
 
             </div>
