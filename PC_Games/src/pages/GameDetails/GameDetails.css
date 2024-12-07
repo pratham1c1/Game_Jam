@@ -6,6 +6,14 @@
     color: white;
 }
 
+.GameName{
+    width: 362px;
+    position: relative;
+    left: 405px;
+}
+
+/* ---------------------------------------------------- */
+
 .GameInfo{
     width: 90%;
     height: 500px;
@@ -17,6 +25,13 @@
     border: 1px solid #ffffff;
     border-radius: 4px;
     overflow: auto;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+.GameInfoH3{
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: #555;
 }
 /* -------------------------------------- */
 
@@ -55,10 +70,74 @@
 }
 
 /* ****************************** */
-.GameDetails{
-    background-color: #d3d28e6e;
+.GameDetailsInfo {
+    background-color: #ffffffbd; /* Light yellowish background */
     width: 50%;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    /* margin: 20px auto; */
 }
+
+.GameHeader {
+    display: flex;
+    align-items: center; /* Align button and text vertically */
+    justify-content: flex-start; /* Add spacing between button and name */
+    margin-bottom: 10px;
+}
+
+.GameHeader button {
+    padding: 10px 15px;
+    background-color: #007bff; /* Blue color for button */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.GameHeader button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.GameHeader h3 {
+    margin-left: 10px; /* Small spacing between button and file name */
+    font-size: 18px;
+    font-weight: normal;
+    color: #333;
+}
+
+.ScrollableTextArea {
+    margin-top: 10px;
+}
+
+.ScrollableTextArea h3 {
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: #555;
+}
+
+.ScrollableTextArea textarea {
+    width: 97%;
+    height: 100px;
+    resize: none; /* Disable resizing */
+    overflow-y: scroll; /* Add scroll for overflow */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    outline: none;
+    scrollbar-width: none;
+}
+
 
 /* ---------------------------------- */
 .GameComments{
