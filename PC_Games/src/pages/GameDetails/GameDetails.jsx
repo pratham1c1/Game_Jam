@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
+import { useLocation , useNavigate } from "react-router-dom";
 import './GameDetails.css'
 
 function GameDetails(props){
@@ -9,9 +10,10 @@ function GameDetails(props){
     const [gameSecondSs, setGameSecondSs] = useState(null);
     const [gameFile, setGameFile] = useState(null);
     const [downloadUrl, setDownloadUrl] = useState(null);
-    const[gameName, setGameName] = useState("2nd Game"); // props.gameName
+    const location = useLocation();
+    const {gameName} = location.state || {}; // props.gameName
     const [userName, setUserName] = useState(null);
-    
+    const navigate = useNavigate();
 
     const fetchGames = async () => {
         console.log("In fetchGames ...");
@@ -94,14 +96,20 @@ function GameDetails(props){
         }
     };
     
+    const handlClickonUser = (event) => {
+        navigate("/" , {
+            state: {userName : userName}
+        });
+    }
 
 
     useEffect( () => {
         console.log("This is GameDetails useEffect ...");
+        console.log("Testing gameName : " , location.state);
         fetchGames();
         fetchGameUser();
         console.log("gamedetails :" , gameInfo);
-    },[])
+    },[gameName])
 
     // Refresh again to set the gameInfo variable
     useEffect(() => {
@@ -125,22 +133,22 @@ function GameDetails(props){
                     </div>
                     <div className="GameDetailsInfo">
                         <h3 className="GameInfoH3">Game Name: {gameInfo?.gameName || "Loading..."}</h3>
-                        <h3 className="GameInfoH3">Game Author: {userName || "Loading..."}</h3>
+                        <h3 className="GameInfoH3" onClick={handlClickonUser}>Game Author: {userName || "Loading..."}</h3>
                         <div className="ScrollableTextArea">
                             <h3>Description:</h3>
                             <textarea
-                                value={gameInfo?.gameDescription || "Loading..."}
+                                value={gameInfo?.gameDescription || "The best game that you never played before"}
                                 readOnly
                             />
                         </div>
                         <div className="ScrollableTextArea">
                             <h3>Install Instruction:</h3>
                             <textarea
-                                value={gameInfo?.gameInstallInstruction || "Loading..."}
+                                value={gameInfo?.gameInstallInstruction || "Download the game."}
                                 readOnly
                             />
                         </div>
-                        <div className="GameHeader">
+                        <div className="GameHeader" style={{ display: gameInfo?.gameFileId ? "flex" : "none" }}>
                             <button onClick={() => fetchGameFile(`${gameInfo.gameName}`)}>Download</button>
                             <h3>{gameName}.zip</h3>
                         </div>

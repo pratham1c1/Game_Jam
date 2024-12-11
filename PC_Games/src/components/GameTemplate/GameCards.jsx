@@ -8,6 +8,7 @@ function GameCards(props){
     const title_color = props.title_color;
     const value_color = props.value_color;
     const setGameDeleteFlag = props.setGameDeleteFlag;
+    const setRedirFlag = props.setRedirFlag;
 
     const deleteGame = async (gameName) => {
         // Show confirmation popup
@@ -40,6 +41,9 @@ function GameCards(props){
         setGameDeleteFlag((prev) => !prev);
     };
     
+    const redirectPage = (event) => {
+        setRedirFlag(event.target.textContent);
+    }
 
     return(
         <div className='card'>
@@ -49,7 +53,7 @@ function GameCards(props){
             </div>
 
             <div className='card_value' style={{backgroundColor:value_color}}>
-                <p>{description}</p>
+                <p onClick={(e) => redirectPage(e)}>{description}</p>
             </div>
         </div>
     )

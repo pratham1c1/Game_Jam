@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import GameCards from '../../components/GameTemplate/GameCards';
 import './UserGames.css';
 import axios from "axios"
@@ -6,10 +7,14 @@ import PopupForm from '../../components/PopupForm/PopupForm';
 
 function UserGames() {
     const [games, setGames] = useState([]);
-    const [userName, setUserName] = useState("PC");
+    // const [userName, setUserName] = useState("PC");
+    const location = useLocation();
+    const {userName} = location.state || {};
     const [isPopupVisible , setPopupVisible] = useState(0);
+    const [gameName, setGameName] = useState(null);
     const popupRef = useRef(null);
     const fileInputRefs = useRef({});
+    const [redirFlag , setRedirFlag] = useState(false);
     const [formData, setFormData] = useState({
         gameName: "",
         gameDescription:"",
@@ -21,6 +26,18 @@ function UserGames() {
         gameBackgroundImage:null,
         gameFile:null
     });
+    const navigate = useNavigate();
+
+    const handleRedirect = () => {
+        if (redirFlag ) {
+            console.log("Redirecting to GamePage ...");
+            navigate("/GamePage", {
+                state: { gameName: `${redirFlag}` }
+            });
+        }
+    };
+
+    
     const resetFormData = () => {
 
         // Reset file inputs via refs
@@ -111,6 +128,11 @@ function UserGames() {
           }
     }, [isPopupVisible,gameDeleteFlag]);
 
+
+    useEffect(()=>{
+        handleRedirect();
+    },[redirFlag]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -187,6 +209,7 @@ function UserGames() {
                                 title={<img src={game.gameCoverImageUrl} alt={game.gameName} style={{ width: '100%', height: '100%' }} />}
                                 description={game.gameName}
                                 setGameDeleteFlag={setGameDeleteFlag}
+                                setRedirFlag ={setRedirFlag}
                             />
                         ))
                     ) : (
