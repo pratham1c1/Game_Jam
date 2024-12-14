@@ -1,8 +1,8 @@
 import axios from 'axios';
-import './GameCards.css'
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
+import styles from './GameCards.module.css'; // Import the CSS module
 
-function GameCards(props){
+function GameCards(props) {
     const title = props.title;
     const description = props.description;
     const title_color = props.title_color;
@@ -16,47 +16,47 @@ function GameCards(props){
         if (!confirmDelete) {
             return; // Exit if user cancels
         }
-    
+
         try {
             // Perform delete request
             const response = await axios.delete(`http://localhost:8080/api/games/deleteGameDetailsByName/${gameName}`);
-    
+
             // Show success popup
             const successPopup = document.createElement("div");
             successPopup.textContent = "Game Deleted Successfully!";
-            successPopup.className = "successfulPopup"
+            successPopup.className = styles.successfulPopup; // Use styles from the module
             document.body.appendChild(successPopup);
-    
+
             // Remove popup after 1 second
             setTimeout(() => {
                 document.body.removeChild(successPopup);
             }, 2000);
-    
+
         } catch (error) {
             console.error(`Error deleting game "${gameName}":`, error);
             alert("Failed to delete game");
         }
-    
+
         // Update state to trigger a refresh
         setGameDeleteFlag((prev) => !prev);
     };
-    
+
     const redirectPage = (event) => {
         setRedirFlag(event.target.textContent);
     }
 
-    return(
-        <div className='card'>
-            <div className='card_title' style={{backgroundColor:title_color}}>
-                <button onClick={() => deleteGame(description)} className='card_cancel_button'>X</button>
+    return (
+        <div className={styles.card}>
+            <div className={styles.card_title} style={{ backgroundColor: title_color }}>
+                <button onClick={() => deleteGame(description)} className={styles.card_cancel_button}>X</button>
                 <p>{title}</p>
             </div>
 
-            <div className='card_value' style={{backgroundColor:value_color}}>
+            <div className={styles.card_value} style={{ backgroundColor: value_color }}>
                 <p onClick={(e) => redirectPage(e)}>{description}</p>
             </div>
         </div>
-    )
+    );
 }
 
-export default GameCards
+export default GameCards;

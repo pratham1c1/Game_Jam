@@ -7,17 +7,16 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from './components/PageHeader/Header'
 import CommonHeader from './components/PageHeader/CommonHeader'
 
-function App() {
+function App_test() {
   const [count, setCount] = useState(0)
 
   return (
     <>
       <div className='AppPage'>
         <Router>
-          <CommonHeader/>
+          {/* <CommonHeader /> */}
           <Routes>
-            <Route path="/" element={<UserGames />} />
-            <Route path="/GamePage" element={<GameDetails />} />
+            <Route path="/" element={<CommonHeader />} />
           </Routes>
         </Router>
       </div>
@@ -25,4 +24,4 @@ function App() {
   )
 }
 
-export default App
+export default App_test

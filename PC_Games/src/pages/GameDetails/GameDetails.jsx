@@ -1,9 +1,9 @@
 import axios from "axios";
-import { useEffect, useState } from "react"
-import { useLocation , useNavigate } from "react-router-dom";
-import './GameDetails.css'
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import styles from './GameDetails.module.css'; // Import the CSS module
 
-function GameDetails(props){
+function GameDetails(props) {
     const [gameInfo, setGameInfo] = useState(null);
     const [gameCoverImage, setGameCoverImage] = useState(null);
     const [gameFirstSs, setGameFirstSs] = useState(null);
@@ -11,7 +11,7 @@ function GameDetails(props){
     const [gameFile, setGameFile] = useState(null);
     const [downloadUrl, setDownloadUrl] = useState(null);
     const location = useLocation();
-    const {gameName} = location.state || {}; // props.gameName
+    const { gameName } = location.state || {}; // props.gameName
     const [userName, setUserName] = useState(null);
     const navigate = useNavigate();
 
@@ -19,30 +19,27 @@ function GameDetails(props){
         console.log("In fetchGames ...");
         try {
             const response = await axios.get(`http://localhost:8080/api/games/getGameDetailsByName/${gameName}`);
-            console.log("Response : " ,response.data);
+            console.log("Response : ", response.data);
             if (!response.data) {
                 console.error("No games data found.");
                 return;
             }
 
             setGameInfo(response.data);
-            // setDownloadUrl(URL.createObjectURL(blob));
-            // Map and gameCoverImage
+            // Map and set gameCoverImage
             const gamesWithImageURL = response.data.gameCoverImage && response.data.gameCoverImage.data
-                    ? `data:image/png;base64,${response.data.gameCoverImage.data}` // Use the base64 image if available
-                    : `/no_image.png` // Fallback to the public 'no_image.png'
-            ;
-            setGameCoverImage(gamesWithImageURL); // Set processed data to state
-            //Set gameFirstSs
+                ? `data:image/png;base64,${response.data.gameCoverImage.data}` // Use the base64 image if available
+                : `/no_image.png`; // Fallback to the public 'no_image.png'
+            setGameCoverImage(gamesWithImageURL);
+            
+            // Set other game images
             setGameFirstSs(response.data.gameFirstScreenshot && response.data.gameFirstScreenshot.data
-                ? `data:image/png;base64,${response.data.gameFirstScreenshot.data}` // Use the base64 image if available
-                    : `/no_image.png` // Fallback to the public 'no_image.png' 
-            )
-            // Set gameSecondSs
+                ? `data:image/png;base64,${response.data.gameFirstScreenshot.data}`
+                : `/no_image.png`);
+
             setGameSecondSs(response.data.gameSecondScreenshot && response.data.gameSecondScreenshot.data
-                ? `data:image/png;base64,${response.data.gameSecondScreenshot.data}` // Use the base64 image if available
-                    : `/no_image.png` // Fallback to the public 'no_image.png' 
-            )
+                ? `data:image/png;base64,${response.data.gameSecondScreenshot.data}`
+                : `/no_image.png`);
         } catch (error) {
             console.error("Error fetching games:", error);
             alert("Failed to load games.");
@@ -50,19 +47,19 @@ function GameDetails(props){
     };
 
     const fetchGameUser = async () => {
-        try{
+        try {
             const response = await axios.get(`http://localhost:8080/api/userGames/getGameUserDetails/${gameName}`);
-            if(!response.data){
+            if (!response.data) {
                 console.error("No game user data found.");
-                return; 
+                return;
             }
             console.log("User API response : ", response);
             setUserName(response.data.userName);
-        }catch (error) {
+        } catch (error) {
             console.error("Error fetching user:", error);
             alert("Failed to get user");
         }
-    }
+    };
 
     const fetchGameFile = async (gameName) => {
         try {
@@ -70,17 +67,17 @@ function GameDetails(props){
                 `http://localhost:8080/api/games/getGameFileByGameName/${gameName}`,
                 { responseType: "arraybuffer" } // Fetch as binary data
             );
-    
+
             console.log("Response: ", fileResponse);
-    
+
             if (!fileResponse.data) {
                 console.error("No game file data found.");
                 return;
             }
-    
+
             // Create a Blob from the binary data
             const blob = new Blob([fileResponse.data], { type: "application/zip" });
-    
+
             // Generate a temporary download link
             const downloadUrl = URL.createObjectURL(blob);
             const link = document.createElement("a");
@@ -95,21 +92,20 @@ function GameDetails(props){
             alert("Failed to load game file.");
         }
     };
-    
+
     const handlClickonUser = (event) => {
-        navigate("/" , {
-            state: {userName : userName}
+        navigate("/", {
+            state: { userName: userName }
         });
-    }
+    };
 
-
-    useEffect( () => {
+    useEffect(() => {
         console.log("This is GameDetails useEffect ...");
-        console.log("Testing gameName : " , location.state);
+        console.log("Testing gameName : ", location.state);
         fetchGames();
         fetchGameUser();
-        console.log("gamedetails :" , gameInfo);
-    },[gameName])
+        console.log("gamedetails :", gameInfo);
+    }, [gameName]);
 
     // Refresh again to set the gameInfo variable
     useEffect(() => {
@@ -118,48 +114,45 @@ function GameDetails(props){
         }
     }, [gameInfo]);
 
-
-    return(
+    return (
         <>
-            <div className="GamePage" style={{backgroundImage : `url(${gameCoverImage})`}}>
-                <div className="GameName"><h1>{gameName}</h1></div>
-                <div className="GameInfo">
-                    <div className="GameImages">
-                        <div className="gameCoverImage" style={{backgroundImage : `url(${gameCoverImage})`}}></div>
-                        <div className="GameScreenshots">
-                            <div className="FirstGameScreenshot" style={{backgroundImage : `url(${gameFirstSs})`}}></div>
-                            <div className="SecondGameScreenshot" style={{backgroundImage : `url(${gameSecondSs})`}}></div>
+            <div className={styles.GamePage} style={{ backgroundImage: `url(${gameCoverImage})` }}>
+                <div className={styles.GameName}><h1>{gameName}</h1></div>
+                <div className={styles.GameInfo}>
+                    <div className={styles.GameImages}>
+                        <div className={styles.gameCoverImage} style={{ backgroundImage: `url(${gameCoverImage})` }}></div>
+                        <div className={styles.GameScreenshots}>
+                            <div className={styles.FirstGameScreenshot} style={{ backgroundImage: `url(${gameFirstSs})` }}></div>
+                            <div className={styles.SecondGameScreenshot} style={{ backgroundImage: `url(${gameSecondSs})` }}></div>
                         </div>
                     </div>
-                    <div className="GameDetailsInfo">
-                        <h3 className="GameInfoH3">Game Name: {gameInfo?.gameName || "Loading..."}</h3>
-                        <h3 className="GameInfoH3" onClick={handlClickonUser}>Game Author: {userName || "Loading..."}</h3>
-                        <div className="ScrollableTextArea">
+                    <div className={styles.GameDetailsInfo}>
+                        <h3 className={styles.GameInfoH3}>Game Name: {gameInfo?.gameName || "Loading..."}</h3>
+                        <h3 className={styles.GameInfoH3} onClick={handlClickonUser}>Game Author: {userName || "Loading..."}</h3>
+                        <div className={styles.ScrollableTextArea}>
                             <h3>Description:</h3>
                             <textarea
                                 value={gameInfo?.gameDescription || "The best game that you never played before"}
                                 readOnly
                             />
                         </div>
-                        <div className="ScrollableTextArea">
+                        <div className={styles.ScrollableTextArea}>
                             <h3>Install Instruction:</h3>
                             <textarea
                                 value={gameInfo?.gameInstallInstruction || "Download the game."}
                                 readOnly
                             />
                         </div>
-                        <div className="GameHeader" style={{ display: gameInfo?.gameFileId ? "flex" : "none" }}>
+                        <div className={styles.GameHeader} style={{ display: gameInfo?.gameFileId ? "flex" : "none" }}>
                             <button onClick={() => fetchGameFile(`${gameInfo.gameName}`)}>Download</button>
                             <h3>{gameName}.zip</h3>
                         </div>
                     </div>
-
                 </div>
-                <div className="GameComments"></div>
+                <div className={styles.GameComments}></div>
             </div>
         </>
-    )
+    );
 }
-
 
 export default GameDetails;

@@ -22,19 +22,16 @@
     max-height: 65%;
     overflow-y: auto;
     transform: translateY(0%) scale(1);
-    /* opacity: 0;  */
     transition: transform 0.5s ease;
 }
 
 .popupContainer.visible {
-    /* opacity: 1;  */
     pointer-events: auto; 
 }
 
 .popupContainer.visible .popupDiv {
     transform: translateY(100%) scale(0);
     transition: transform 0.5s ease;
-    /* opacity: 1;  */
 }
 
 .closeButton {
@@ -55,7 +52,7 @@
     font-weight: bold;
 }
 
-.formInput, .formTextarea{
+.formInput, .formTextarea {
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
