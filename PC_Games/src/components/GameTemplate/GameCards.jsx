@@ -9,7 +9,7 @@ function GameCards(props) {
     const value_color = props.value_color;
     const setGameDeleteFlag = props.setGameDeleteFlag;
     const setRedirFlag = props.setRedirFlag;
-
+    const cancleButtonFlag = props.cancleFlag;
     const deleteGame = async (gameName) => {
         // Show confirmation popup
         const confirmDelete = window.confirm(`Are you sure you want to delete the game "${gameName}"?`);
@@ -45,10 +45,15 @@ function GameCards(props) {
         setRedirFlag(event.target.textContent);
     }
 
+    useEffect(() => {
+        console.log("This is GameCards : ", props.setGameDeleteFlag);
+    });
+
+
     return (
         <div className={styles.card}>
             <div className={styles.card_title} style={{ backgroundColor: title_color }}>
-                <button onClick={() => deleteGame(description)} className={styles.card_cancel_button}>X</button>
+                <button style={{display : cancleButtonFlag?"block":"none"}} id="deleteButton" onClick={() => deleteGame(description)} className={styles.card_cancel_button}>X</button>
                 <p>{title}</p>
             </div>
 

@@ -8,26 +8,26 @@ body {
     background-color: whitesmoke;
     position: relative;
     left: 130px;
-    margin-top: 5px;
     display: flex;
+    margin-top: -6px;
   }
   .siteLogo{
-    height: 15em;
-      padding: 0.5em;
-      will-change: filter;
-      transition: filter 300ms;
-      position: absolute;
-      top: -60px;
-      left: 0px;
+    height: 8em;
+    padding: 0.5em;
+    will-change: filter;
+    transition: filter 300ms;
+    position: absolute;
+    top: -25px;
+    left: -52px;
   }
   .topnav a {
     float: left;
     display: block;
     color: black;
     text-align: center;
-    padding: 14px 16px;
+    padding: 13px 16px;
     text-decoration: none;
-    font-size: 17px;
+    font-size: 16px;
     border-radius: 7px;
     margin-left: 4px;
   }
@@ -53,7 +53,7 @@ body {
           top: -181px;
           left: 80px;
           font-size: 21px;
-          margin-bottom: 13px;
+          margin-bottom: -13px;
           width: 224px;
     }
     .topnav.responsive {
@@ -180,7 +180,7 @@ body {
     justify-content: space-around;
     width: 100%;
     background-color: whitesmoke;
-    height: 86px;
+    height: 50px;
     position: sticky;
     top: 0px;
     z-index: 10;
@@ -226,7 +226,7 @@ body {
 .dropdown {
   position: absolute;
   top: 100%; /* Position below the username */
-  right: 0;
+  right: -45px;
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 5px;

@@ -1,6 +1,6 @@
 .card {
     background-color: black;
-    width: 294px;
+    width: 268px;
     height: 233px;
     color: rgb(41, 59, 74);
     border-radius: 10px;
@@ -10,7 +10,7 @@
 
 .card_cancel_button {
     position: absolute;
-    left: 258px;
+    left: 230px;
     top: 0px;
     background: #00000052;
     border-color: white;

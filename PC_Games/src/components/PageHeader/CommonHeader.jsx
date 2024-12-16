@@ -1,4 +1,4 @@
-import siteLogo from '../../assets/logo-no-background.svg';
+import siteLogo from '../../assets/Common_logo-removebg.png';
 import styles from './CommonHeader.module.css';
 import React, { useState, useEffect, useRef } from "react";
 
