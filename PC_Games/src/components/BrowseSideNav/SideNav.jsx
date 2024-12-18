@@ -57,7 +57,7 @@ function SideNav(props) {
 
     const dropdownData = {
         Genre: ["Action", "Adventure", "Strategy", "Puzzle", "Other"],
-        Platform: ["Windows", "macOS", "Linux", "Mobile", "Other"],
+        Platform: ["Windows", "macOS", "Linux", "Android", "Other"],
         Date: ["Last 7 Days", "Last 30 Days", "Last 6 Months", "Last Year", "Other"],
         Price: ["Free", "Under $5", "Under $10", "Premium", "Other"],
     };

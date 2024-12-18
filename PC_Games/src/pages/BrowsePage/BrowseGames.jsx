@@ -93,8 +93,8 @@ function BrowseGames() {
                             games.map((game) => (
                                 <GameCards
                                     key={game.gameId}
-                                    title={<img src={game.gameCoverImageUrl} alt={game.gameName} style={{ width: '100%', height: '100%' }} />}
-                                    description={game.gameName}
+                                    gameImage={<img src={game.gameCoverImageUrl} alt={game.gameName} style={{ width: '100%', height: '100%' }} />}
+                                    gameNameValue={game.gameName}
                                     setRedirFlag={setRedirFlag}
                                     cancleFlag={false}
                                 />

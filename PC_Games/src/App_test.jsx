@@ -9,6 +9,7 @@ import Header from './components/PageHeader/Header'
 import CommonHeader from './components/PageHeader/CommonHeader'
 import SideNav from './components/BrowseSideNav/SideNav';
 import BrowseGames from './pages/BrowsePage/BrowseGames';
+import GameCards from './components/GameTemplate/GameCards';
 
 
 

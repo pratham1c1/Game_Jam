@@ -1,62 +1,151 @@
 .card {
-    background-color: black;
-    width: 268px;
-    height: 233px;
-    color: rgb(41, 59, 74);
+    background-color: #ffffff;
+    width: 255px;
     border-radius: 10px;
-    margin: 25px 12px 25px 5px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
+    margin: 20px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Card Image */
+.card_Image {
+    height: 190px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.card_Image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .card_cancel_button {
     position: absolute;
-    left: 230px;
-    top: 0px;
-    background: #00000052;
-    border-color: white;
-    border-radius: 6px;
-    color: #ff0000;
-    width: 40px;
-    align-items: center;
-    display: flex;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
 }
 
-.card_title {
-    background-color: rgb(0, 0, 0);
+/* Card Content */
+.card_value {
+    padding: 10px;
     display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.gameNumbers {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.gameNumbers i {
+    cursor: pointer;
+    margin-right: 5px;
+    transition: color 0.3s;
+    margin-left: 10px;
+}
+
+.gameNumbers i:hover {
+    color: #007bff;
+}
+
+.gameNameInfo{
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 70%;
-    font-size: 30px;
-    border-radius: 10px;
-    overflow: hidden;
+    color: black;
 }
 
-.card_title img {
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
-    border-radius: 10px;
-}
-
-.card_value {
-    background-color: #ffffff;
-    display: grid;
-    height: 30%;
+.gameNameInfo h4 {
     font-size: 20px;
-    place-items: center;
-    border-radius: 10px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+}
+.gameNameInfo h5{
+    margin-top: -5px;
+    cursor: pointer;
+}
+
+.gameLikeDislike{
+    padding-left: 0px;
+}
+
+.gameDownloadsView{
+    margin-left: 0px;
+    width: 77px;
+}
+
+/* ---------------------------------------- */
+
+.gameStrip {
+    background-color: #737373;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    padding: 5px;
+}
+
+.genreTag {
+    font-size: 12px;
+    color: #444;
+    background-color: #ddd;
+    border-radius: 3px;
+    padding: 2px 5px;
+}
+
+.icon {
+    font-size: 18px;
+    margin-right: 5px;
 }
 
 /* Popup */
-.successfulPopup {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #4caf50;
-    color: #fff;
-    padding: 10px 20px;
+.popup {
+    position: absolute;
+    left: 0px;
+    top: 86px;
+    width: 200px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 10;
+}
+
+.popup h4 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.popup p {
+    font-size: 14px;
+    color: #555;
+}
+
+.popupImage {
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
     border-radius: 5px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
 }
