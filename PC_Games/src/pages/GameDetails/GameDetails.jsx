@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from './GameDetails.module.css'; // Import the CSS module
+import CommonHeader from "../../components/PageHeader/CommonHeader";
 
 function GameDetails(props) {
     const [gameInfo, setGameInfo] = useState(null);
@@ -12,6 +13,7 @@ function GameDetails(props) {
     const [downloadUrl, setDownloadUrl] = useState(null);
     const location = useLocation();
     const { gameName } = location.state || {}; // props.gameName
+    const loggedInUserName = location.state.loggedInUserName;
     const [userName, setUserName] = useState(null);
     const navigate = useNavigate();
 
@@ -40,24 +42,10 @@ function GameDetails(props) {
             setGameSecondSs(response.data.gameSecondScreenshot && response.data.gameSecondScreenshot.data
                 ? `data:image/png;base64,${response.data.gameSecondScreenshot.data}`
                 : `/no_image.png`);
+            setUserName(response.data.userName);
         } catch (error) {
             console.error("Error fetching games:", error);
             alert("Failed to load games.");
-        }
-    };
-
-    const fetchGameUser = async () => {
-        try {
-            const response = await axios.get(`http://localhost:8080/api/userGames/getGameUserDetails/${gameName}`);
-            if (!response.data) {
-                console.error("No game user data found.");
-                return;
-            }
-            console.log("User API response : ", response);
-            setUserName(response.data.userName);
-        } catch (error) {
-            console.error("Error fetching user:", error);
-            alert("Failed to get user");
         }
     };
 
@@ -94,7 +82,7 @@ function GameDetails(props) {
     };
 
     const handlClickonUser = (event) => {
-        navigate("/", {
+        navigate("/DashboardPage", {
             state: { userName: userName }
         });
     };
@@ -103,7 +91,6 @@ function GameDetails(props) {
         console.log("This is GameDetails useEffect ...");
         console.log("Testing gameName : ", location.state);
         fetchGames();
-        fetchGameUser();
         console.log("gamedetails :", gameInfo);
     }, [gameName]);
 
@@ -116,6 +103,7 @@ function GameDetails(props) {
 
     return (
         <>
+            <CommonHeader/>
             <div className={styles.GamePage} style={{ backgroundImage: `url(${gameCoverImage})` }}>
                 <div className={styles.GameName}><h1>{gameName}</h1></div>
                 <div className={styles.GameInfo}>

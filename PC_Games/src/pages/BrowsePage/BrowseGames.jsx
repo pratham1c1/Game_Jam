@@ -5,20 +5,31 @@ import axios from "axios";
 
 import GameCards from "../../components/GameTemplate/GameCards";
 import SideNav from "../../components/BrowseSideNav/SideNav";
+import CommonHeader from "../../components/PageHeader/CommonHeader";
 
-function BrowseGames() {
+function BrowseGames(props) {
     const [games, setGames] = useState([]);
     const location = useLocation();
+    const loggedInUserName = props.loggedInUserName || "PC";
     const userName = location?.state?.userName || "PC";
     const [gameName, setGameName] = useState(null);
-    const [redirFlag, setRedirFlag] = useState(false);
+    const [gameNameRedirFlag, setGameNameRedirFlag] = useState(false);
+    const [authorNameRedirFlag, setAuthorNameRedirFlag] = useState(false);
     const navigate = useNavigate();
     const [toggleSideNavbar, setToggleSideNavbar] =  useState(false);
+
+
     const handleRedirect = () => {
-        if (redirFlag) {
+        if (gameNameRedirFlag) {
             console.log("Redirecting to GamePage ...");
             navigate("/GamePage", {
-                state: { gameName: `${redirFlag}` }
+                state: { gameName: `${gameNameRedirFlag}` , userName : `${userName}` , loggedInUserName:`${loggedInUserName}`}
+            });
+        }
+        if(authorNameRedirFlag){
+            console.log("Redirecting to Author Dashboard ...");
+            navigate("/DashboardPage" ,{
+                state:{userName:`${authorNameRedirFlag}`, loggedInUserName:`${loggedInUserName}`}
             });
         }
     };
@@ -26,7 +37,7 @@ function BrowseGames() {
 
     const fetchGames = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/userGames/getAllGames/${userName}`);
+            const response = await axios.get(`http://localhost:8080/api/games/getAllGames`);
 
             if (!response.data) {
                 console.error("No games data found.");
@@ -58,7 +69,7 @@ function BrowseGames() {
 
     useEffect(() => {
         handleRedirect();
-    }, [redirFlag]);
+    }, [gameNameRedirFlag,authorNameRedirFlag]);
 
     useEffect(()=>{
         console.log("Sidbar toggle : " , toggleSideNavbar);
@@ -67,6 +78,7 @@ function BrowseGames() {
 
     return (
         <>
+            <CommonHeader/>
             <div className={styles.MainDiv}>
                 <div className={styles.sideNavbar}>
                     <SideNav setToggleSideNavbar={setToggleSideNavbar}/>
@@ -93,9 +105,11 @@ function BrowseGames() {
                             games.map((game) => (
                                 <GameCards
                                     key={game.gameId}
-                                    gameImage={<img src={game.gameCoverImageUrl} alt={game.gameName} style={{ width: '100%', height: '100%' }} />}
+                                    gameImage={game.gameCoverImageUrl}
                                     gameNameValue={game.gameName}
-                                    setRedirFlag={setRedirFlag}
+                                    gameAuthorName={game.userName}
+                                    setGameNameRedirFlag={setGameNameRedirFlag}
+                                    setAuthorNameRedirFlag={setAuthorNameRedirFlag}
                                     cancleFlag={false}
                                 />
                             ))

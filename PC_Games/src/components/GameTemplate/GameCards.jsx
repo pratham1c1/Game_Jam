@@ -5,9 +5,9 @@ import styles from "./GameCards.module.css";
 function GameCards(props) {
   const gameImage = props.gameImage || "/no_image.png"; // Default image
   const gameNameValue = props.gameNameValue || "New Game";
-  const gameAuthorName = props.author || "PCgames";
-  const gameGenre = props.gameGenre || ["Action" , "Horror" , "Adventure" , "Arcade"];
-  const gamePlatform = props.gamePlatform || ["Windows","macOS","Linux"];
+  const gameAuthorName = props.gameAuthorName || "PC";
+  const gameGenre = props.gameGenre || ["Action", "Horror", "Adventure"];
+  const gamePlatform = props.gamePlatform || ["Windows", "macOS", "Linux"];
   const gameLikes = props.gameLikes || 100;
   const gameDownload = props.gameDownload || 450;
   const gameDescription = props.gameDescription || "This is description";
@@ -15,26 +15,30 @@ function GameCards(props) {
   const gameSecondSs = props.gameSecondSs || null;
   const setGameDeleteFlag = props.setGameDeleteFlag;
   const cancleButtonFlag = props.cancleFlag;
+  const setGameNameRedirFlag = props.setGameNameRedirFlag;
+  const setAuthorNameRedirFlag = props.setAuthorNameRedirFlag;
 
   const [showPopup, setShowPopup] = useState(false);
   const popupTimeout = useRef(null);
 
   // Delete Game
   const deleteGame = async (gameName) => {
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete "${gameName}"?`
-    );
-    if (!confirmDelete) return;
-
-    try {
-      await axios.delete(
-        `http://localhost:8080/api/games/deleteGameDetailsByName/${gameName}`
+    if (cancleButtonFlag) {
+      const confirmDelete = window.confirm(
+        `Are you sure you want to delete "${gameName}"?`
       );
-      alert("Game Deleted Successfully!");
-      setGameDeleteFlag((prev) => !prev);
-    } catch (error) {
-      console.error("Error deleting game:", error);
-      alert("Failed to delete game.");
+      if (!confirmDelete) return;
+
+      try {
+        await axios.delete(
+          `http://localhost:8080/api/games/deleteGameDetailsByName/${gameName}`
+        );
+        alert("Game Deleted Successfully!");
+        setGameDeleteFlag((prev) => !prev);
+      } catch (error) {
+        console.error("Error deleting game:", error);
+        alert("Failed to delete game.");
+      }
     }
   };
 
@@ -51,17 +55,20 @@ function GameCards(props) {
     console.log("Downloading the game ...");
   }
 
-  const handleClickAuthorName = () => {
-    console.log("Clicked on Author name ...");
+  const handleClickAuthorName = (e) => {
+    console.log("Clicked on Author name ... : ", e.target.textContent);
+    setAuthorNameRedirFlag(e.target.textContent);
   }
 
-  const handleClickGameName = () => {
-    console.log("Clicked on game name ...");
+  const handleClickGameName = (e) => {
+    console.log("Clicked on Game name ... : ");
+    setGameNameRedirFlag(e.target.textContent);
   }
 
   // Redirect Logic
-  const handleImageClick = () => {
+  const handleImageClick = (e) => {
     console.log("Redirecting to game details page:", gameNameValue);
+    setGameNameRedirFlag(gameNameValue);
     // Add redirect logic here
   };
 
@@ -74,7 +81,7 @@ function GameCards(props) {
   };
 
   const handleMouseLeave = () => {
-    console.log("Clearing the popup...");
+    // console.log("Clearing the popup...");
     clearTimeout(popupTimeout.current);
     setShowPopup(false);
   };
@@ -91,66 +98,65 @@ function GameCards(props) {
 
   return (
     <>
-    <div
-      className={styles.card}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {/* Card Image */}
-      <div className={styles.card_Image} onClick={handleImageClick}>
-        <button
-          style={{ display: cancleButtonFlag ? "block" : "none" }}
-          onClick={() => deleteGame(gameNameValue)}
-          className={styles.card_cancel_button}
-        >
-          X
-        </button>
-        {/* <img src={gameImage} alt={gameNameValue} /> */}
-        {gameImage}
-      </div>
-
-      {/* Card Content */}
-      <div className={styles.card_value}>
-        {/* Likes, Dislikes, and Downloads */}
-        <div className={styles.gameNumbers}>
-          <div className={styles.gameLikeDislike}><i className="fa fa-thumbs-up" onClick={handleLike}></i> {gameLikes}
-          <i className="fa fa-thumbs-down" onClick={handleDislike}></i></div>
-          <div className={styles.gameDownloadsView}><i className="fa fa-download" onClick={handleDownload}></i> {gameDownload}</div>
+      <div
+        className={styles.card}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {/* Card Image */}
+        <div className={styles.card_Image}>
+          <i
+            style={{ display: cancleButtonFlag ? "flex" : "none" }}
+            className={`fa fa-trash ${styles.clearIcon}`}
+            onClick={() => deleteGame(gameNameValue)}
+            title="Clear all filters"
+          ></i>
+          <img onClick={(e) => {handleImageClick(e)}} src={gameImage} alt={gameNameValue} />
+          {/* {gameImage} */}
         </div>
 
-        {/* Game Name */}
-        <div className={styles.gameNameInfo}>
-          <h4 onClick={handleClickGameName}>{gameNameValue}</h4>
-          <h5 onClick={handleClickAuthorName}>{gameAuthorName}</h5>
-        </div>
-        {/* Platforms and Genre */}
-        {gamePlatform.length > 0 && (
-          <div className={styles.gameStrip}>{renderPlatformIcons()}</div>
-        )}
-        {gameGenre.length > 0 && (
-          <div className={styles.gameStrip}>
-            {gameGenre.map((genre, index) => (
-              <span key={index} className={styles.genreTag}>
-                {genre}
-              </span>
-            ))}
+        {/* Card Content */}
+        <div className={styles.card_value}>
+          {/* Likes, Dislikes, and Downloads */}
+          <div className={styles.gameNumbers}>
+            <div className={styles.gameLikeDislike}><i className="fa fa-thumbs-up" onClick={handleLike}></i> {gameLikes}
+              <i className="fa fa-thumbs-down" onClick={handleDislike}></i></div>
+            <div className={styles.gameDownloadsView}><i className="fa fa-download" onClick={handleDownload}></i> {gameDownload}</div>
           </div>
-        )}
+
+          {/* Game Name */}
+          <div className={styles.gameNameInfo}>
+            <h4 onClick={(e) => { handleClickGameName(e) }}>{gameNameValue}</h4>
+            <h5 onClick={(e) => { handleClickAuthorName(e) }}>{gameAuthorName}</h5>
+          </div>
+          {/* Platforms and Genre */}
+          {gamePlatform.length > 0 && (
+            <div className={styles.gameStrip}>{renderPlatformIcons()}</div>
+          )}
+          {gameGenre.length > 0 && (
+            <div className={styles.gameStrip}>
+              {gameGenre.map((genre, index) => (
+                <span key={index} className={styles.genreTag}>
+                  {genre}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-    {/* Popup for Details */}
-    {showPopup && gameDescription && (
-      <div className={styles.popup}>
-        <h4>{gameNameValue}</h4>
-        <p>{gameDescription}</p>
-        {gameFirstSs && (
-          <img src={gameFirstSs} alt="First Screenshot" className={styles.popupImage} />
-        )}
-        {gameSecondSs && (
-          <img src={gameSecondSs} alt="Second Screenshot" className={styles.popupImage} />
-        )}
-      </div>
-    )}
+      {/* Popup for Details */}
+      {showPopup && gameDescription && (
+        <div className={styles.popup}>
+          <h4>{gameNameValue}</h4>
+          <p>{gameDescription}</p>
+          {gameFirstSs && (
+            <img src={gameFirstSs} alt="First Screenshot" className={styles.popupImage} />
+          )}
+          {gameSecondSs && (
+            <img src={gameSecondSs} alt="Second Screenshot" className={styles.popupImage} />
+          )}
+        </div>
+      )}
     </>
   );
 }

@@ -4,16 +4,20 @@ import GameCards from '../../components/GameTemplate/GameCards';
 import styles from './UserGames.module.css'; // Import the CSS module
 import axios from "axios";
 import PopupForm from '../../components/PopupForm/PopupForm';
+import CommonHeader from "../../components/PageHeader/CommonHeader";
 
 function UserGames() {
     const [games, setGames] = useState([]);
     const location = useLocation();
-    const userName = location?.state?.userName || "PC";
+    const loggedInUserName = location?.state?.loggedInUserName;
+    const userName = location?.state?.userName ;
     const [isPopupVisible, setPopupVisible] = useState(0);
     const [gameName, setGameName] = useState(null);
     const popupRef = useRef(null);
     const fileInputRefs = useRef({});
-    const [redirFlag, setRedirFlag] = useState(false);
+    const [headerRedirFlag, setHeaderRedirFlag] = useState(false);
+    const [gameNameRedirFlag, setGameNameRedirFlag] = useState(false);
+    const [authorNameRedirFlag, setAuthorNameRedirFlag] = useState(false);
     const [formData, setFormData] = useState({
         gameName: "",
         gameDescription: "",
@@ -28,11 +32,15 @@ function UserGames() {
     const navigate = useNavigate();
 
     const handleRedirect = () => {
-        if (redirFlag) {
+        if (gameNameRedirFlag) {
             console.log("Redirecting to GamePage ...");
             navigate("/GamePage", {
-                state: { gameName: `${redirFlag}` }
+                state: { gameName: `${gameNameRedirFlag}` , userName : `${userName}`}
             });
+        }
+        if(authorNameRedirFlag){
+            console.log("Redirecting to Author Dashboard ...");
+
         }
     };
 
@@ -59,10 +67,12 @@ function UserGames() {
     const [gameDeleteFlag, setGameDeleteFlag] = useState(false);
 
     const displayForm = () => {
-        if (isPopupVisible) {
-            resetFormData(); // Clear the form when it's being closed
+        if (loggedInUserName == userName) {
+            if (isPopupVisible) {
+                resetFormData(); // Clear the form when it's being closed
+            }
+            isPopupVisible === 0 ? setPopupVisible(1) : setPopupVisible(0);
         }
-        isPopupVisible === 0 ? setPopupVisible(1) : setPopupVisible(0);
     };
 
     const fetchGames = async () => {
@@ -123,9 +133,14 @@ function UserGames() {
         }
     }, [isPopupVisible, gameDeleteFlag]);
 
+    useEffect(()=>{
+        console.log("Fetching games for Dashboard ...");
+        fetchGames();
+    },[userName]);
+
     useEffect(() => {
         handleRedirect();
-    }, [redirFlag]);
+    }, [gameNameRedirFlag,authorNameRedirFlag]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -176,24 +191,28 @@ function UserGames() {
 
     return (
         <>
+            <CommonHeader/> 
             <div className={styles.MainDiv}>
                 <div className={styles.UserFields}>
                     <div className={styles.Username}>
-                        <h3>Prathamesh</h3>
+                        <h3>{userName}</h3>
                     </div>
                     <div className={styles.ActionButtons}>
-                        <button onClick={displayForm}>Add</button>
+                        <button style={{display:(loggedInUserName == userName)?"block":"none"}} onClick={displayForm}>Add</button>
                     </div>
                 </div>
                 <div id="mainPageId" className={styles.Games}>
                     {games.length > 0 ? (
                         games.map((game) => (
                             <GameCards
-                                key={game.gameId}
-                                title={<img src={game.gameCoverImageUrl} alt={game.gameName} style={{ width: '100%', height: '100%' }} />}
-                                description={game.gameName}
-                                setGameDeleteFlag={setGameDeleteFlag}
-                                setRedirFlag={setRedirFlag}
+                                    key={game.gameId}
+                                    gameImage={game.gameCoverImageUrl}
+                                    gameNameValue={game.gameName}
+                                    gameAuthorName={userName}
+                                    setGameNameRedirFlag={setGameNameRedirFlag}
+                                    setAuthorNameRedirFlag={setAuthorNameRedirFlag}
+                                    cancleFlag={(loggedInUserName == userName)?true:false}
+                                    setGameDeleteFlag={setGameDeleteFlag}
                             />
                         ))
                     ) : (

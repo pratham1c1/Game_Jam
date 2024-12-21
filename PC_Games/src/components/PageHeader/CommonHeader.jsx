@@ -1,11 +1,13 @@
+import { useNavigate } from 'react-router-dom';
 import siteLogo from '../../assets/Common_logo-removebg.png';
 import styles from './CommonHeader.module.css';
 import React, { useState, useEffect, useRef } from "react";
 
-function CommonHeader() {
-    const userName = "PC";
+function CommonHeader(props) {
+    const loggedInUserName = props.loggedInUserName || "PC";
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const dropdownRef = useRef(null); // Reference to the dropdown element
+    const navigate = useNavigate();
 
     const toggleDropdown = () => {
         setDropdownVisible(!isDropdownVisible);
@@ -16,6 +18,23 @@ function CommonHeader() {
             setDropdownVisible(false); // Close the dropdown if clicked outside
         }
     };
+
+    const handleClickBrowse = () =>{
+        console.log("Navigating to browse page ...");
+        navigate("/BrowsePage");
+    }
+
+    const handleClickDashboard = () =>{
+        console.log("Navigating to own Dashboard page ...");
+        navigate("/DashboardPage",{
+            state:{userName:loggedInUserName , loggedInUserName:loggedInUserName}
+        });
+    }
+
+    const handleClickAbout = () => {
+        console.log("Navigating to Product about page ...");
+        // navigate("/AboutPage");
+    }
 
     useEffect(() => {
         if (isDropdownVisible) {
@@ -46,13 +65,13 @@ function CommonHeader() {
                     </div>
                     <div className={styles.topnav} id="myTopnav">
                         <div className={styles.PagePaths}>
-                            <a href="#Home">Browse</a>
-                            <a href="#Features">Dashboard</a>
-                            <a href="#Features">About</a>
+                            <a onClick={handleClickBrowse}>Browse</a>
+                            <a onClick={handleClickDashboard}>Dashboard</a>
+                            <a onClick={handleClickAbout}>About</a>
                             <a className={styles.line}><div className={styles.lineDivider}></div></a>
                         </div>
                         <div className={styles.userProfileName} ref={dropdownRef}>
-                            <h3 onClick={toggleDropdown}>{userName}</h3>
+                            <h3 onClick={toggleDropdown}>{loggedInUserName}</h3>
                             {isDropdownVisible && (
                                 <div className={styles.dropdown}>
                                     <a href="#Profile">Profile</a>

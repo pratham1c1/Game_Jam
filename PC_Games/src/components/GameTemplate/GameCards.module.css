@@ -1,6 +1,7 @@
 .card {
     background-color: #ffffff;
     width: 255px;
+    height: 400px;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -39,6 +40,8 @@
     width: 25px;
     height: 25px;
     cursor: pointer;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Card Content */
@@ -148,4 +151,46 @@
     height: auto;
     margin-top: 10px;
     border-radius: 5px;
+}
+/* Clear button ----------------------------- */
+/* Clear All Button */
+/* Clear All Icon */
+.clearIcon {
+    font-size: 18px;
+    color: #f44336; /* Red color for delete icon */
+    /* margin-left: 10px; Add spacing between Go button and trash icon */
+    cursor: pointer;
+    transition: color 0.3s ease;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: none;
+    border-radius: 25%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+}
+
+.clearIcon:hover {
+    color: #d32f2f; /* Darker red on hover */
+}
+
+/* Tooltip for hover (optional) */
+.clearIcon[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    font-size: 12px;
+    padding: 5px;
+    border-radius: 4px;
+    top: -30px;
+    left: 0;
+    white-space: nowrap;
+    z-index: 1000;
+    opacity: 0.9;
 }
