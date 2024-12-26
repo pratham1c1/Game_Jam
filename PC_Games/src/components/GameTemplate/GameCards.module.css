@@ -14,6 +14,7 @@
     transform: translateY(-5px);
 }
 
+
 /* Card Image */
 .card_Image {
     height: 190px;
@@ -73,10 +74,28 @@
 
 .gameNameInfo{
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: start;
     align-items: center;
     color: black;
+    height: 60px;
+}
+
+.gameStatusCircle{
+    width: 40px;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    left: -10px;
+}
+.gameNameValues {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
 }
 
 .gameNameInfo h4 {
@@ -194,3 +213,69 @@
     z-index: 1000;
     opacity: 0.9;
 }
+
+/* -------------------------SemiCircle status ------------------ */
+
+.devSemiCircleOnCard,.publishSemiCircleOnCard{
+    /* position: absolute; */
+    width: 0px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #d1d1d1;
+    /* left: 10px; */
+    transform: translateY(-50%);
+    transition: width 0.3s linear, left 0.3s linear, opacity 0.3s linear;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 0 150px 150px 0;
+}
+
+.devSemiCircleOnCard{
+    top: 239px;
+}
+
+.publishSemiCircleOnCard {
+    top: 265px;
+}
+
+.devSemiCircleOnCard {
+    background-color: #f28b82; /* Red for dev */
+}
+
+.publishSemiCircleOnCard {
+    background-color: #34a853; /* Green for publish */
+}
+.devSemiCircleOnCard.clicked,
+.publishSemiCircleOnCard.clicked {
+    width: 38px;
+    left: 0px;
+    opacity: 1;
+}
+
+/* .card:hover .devSemiCircleOnCard {
+    width: 20px; 
+    opacity: 0.3; 
+}
+
+.card:hover .publishSemiCircleOnCard {
+    width: 38px; 
+    opacity: 0.3; 
+} */
+
+/* .card:hover .devSemiCircleOnCard .publishSemiCircleOnCard::after{
+    width: 0px;
+} */
+
+
+/* .card:hover .publishSemiCircleOnCard.clicked {
+    opacity: 1; /* Ensure it stays visible */
+/* } */
+/* 
+.card:hover .devSemiCircleOnCard.clicked {
+    opacity: 1; /* Ensure it stays visible */
+/* }  */

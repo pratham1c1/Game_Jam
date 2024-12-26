@@ -12,8 +12,8 @@ function GameDetails(props) {
     const [gameFile, setGameFile] = useState(null);
     const [downloadUrl, setDownloadUrl] = useState(null);
     const location = useLocation();
-    const { gameName } = location.state || {}; // props.gameName
-    const loggedInUserName = location.state.loggedInUserName;
+    const { gameName } = location?.state || {}; // props.gameName
+    const loggedInUserName = location?.state?.loggedInUserName || "PC";
     const [userName, setUserName] = useState(null);
     const navigate = useNavigate();
 
@@ -110,8 +110,8 @@ function GameDetails(props) {
                     <div className={styles.GameImages}>
                         <div className={styles.gameCoverImage} style={{ backgroundImage: `url(${gameCoverImage})` }}></div>
                         <div className={styles.GameScreenshots}>
-                            <div className={styles.FirstGameScreenshot} style={{ backgroundImage: `url(${gameFirstSs})` }}></div>
-                            <div className={styles.SecondGameScreenshot} style={{ backgroundImage: `url(${gameSecondSs})` }}></div>
+                            <div className={styles.FirstGameScreenshot} ><img className={styles.ImageSS} src={gameFirstSs}></img></div>
+                            <div className={styles.SecondGameScreenshot}><img className={styles.ImageSS} src={gameSecondSs}></img></div>
                         </div>
                     </div>
                     <div className={styles.GameDetailsInfo}>

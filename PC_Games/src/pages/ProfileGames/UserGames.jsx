@@ -9,8 +9,8 @@ import CommonHeader from "../../components/PageHeader/CommonHeader";
 function UserGames() {
     const [games, setGames] = useState([]);
     const location = useLocation();
-    const loggedInUserName = location?.state?.loggedInUserName;
-    const userName = location?.state?.userName ;
+    const loggedInUserName = location?.state?.loggedInUserName || "PC";
+    const userName = location?.state?.userName || "PC";
     const [isPopupVisible, setPopupVisible] = useState(0);
     const [gameName, setGameName] = useState(null);
     const popupRef = useRef(null);
@@ -104,7 +104,7 @@ function UserGames() {
 
     useEffect(() => {
         console.log("Fetching games ...with isPopupVisible : ", isPopupVisible);
-        fetchGames();
+        // fetchGames();
         if (isPopupVisible !== 0) {
             document.getElementById("mainPageId").style.webkitFilter = "blur(4px)";
             document.body.style.overflowY = 'hidden';
@@ -131,12 +131,12 @@ function UserGames() {
             document.getElementById("mainPageId").style.webkitFilter = "";
             document.body.style.overflowY = 'auto';
         }
-    }, [isPopupVisible, gameDeleteFlag]);
+    }, [isPopupVisible]);
 
     useEffect(()=>{
         console.log("Fetching games for Dashboard ...");
         fetchGames();
-    },[userName]);
+    },[userName,gameDeleteFlag]);
 
     useEffect(() => {
         handleRedirect();
@@ -213,6 +213,7 @@ function UserGames() {
                                     setAuthorNameRedirFlag={setAuthorNameRedirFlag}
                                     cancleFlag={(loggedInUserName == userName)?true:false}
                                     setGameDeleteFlag={setGameDeleteFlag}
+                                    visibleGameToOthers={false}
                             />
                         ))
                     ) : (

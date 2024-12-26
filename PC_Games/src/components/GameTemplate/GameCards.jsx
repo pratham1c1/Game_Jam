@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./GameCards.module.css";
 
 function GameCards(props) {
@@ -17,6 +17,9 @@ function GameCards(props) {
   const cancleButtonFlag = props.cancleFlag;
   const setGameNameRedirFlag = props.setGameNameRedirFlag;
   const setAuthorNameRedirFlag = props.setAuthorNameRedirFlag;
+  const [visibleGameToOthers, setVisibleGameToOthers] = useState(props.visibleGameToOthers ?? true);
+  const [clickedDiv, setClickedDiv] = useState(null);
+
 
   const [showPopup, setShowPopup] = useState(false);
   const popupTimeout = useRef(null);
@@ -96,17 +99,64 @@ function GameCards(props) {
       </span>
     ));
 
+    const handleDivClick = (divType) => {
+      setClickedDiv(divType);
+      setVisibleGameToOthers(divType === "publish");
+      if(divType === "dev"){
+        document.getElementById(`publishSemiCircleId-${gameNameValue}`).style.width = "20px";
+        document.getElementById(`devSemiCircleId-${gameNameValue}`).style.width = "38px";
+      }
+      else{
+        document.getElementById(`publishSemiCircleId-${gameNameValue}`).style.width = "38px";
+        document.getElementById(`devSemiCircleId-${gameNameValue}`).style.width = "20px";
+      }
+    };
+  
+    const getOpacity = (type) => {
+      if (clickedDiv) {
+        return type === clickedDiv ? 1 : 0.3;
+      }
+      return visibleGameToOthers === (type === "publish") ? 1 : 0.3;
+    };
+    const handleMouseEnterCombined = () => {
+      handleMouseEnter();
+      handleSemiCircleEnterEffect();
+  };
+  
+  const handleMouseLeaveCombined = () => {
+      handleMouseLeave();
+      handleSemiCircleLeaveEffect();
+  };
+
+  const handleSemiCircleLeaveEffect = () => {
+    document.getElementById(`publishSemiCircleId-${gameNameValue}`).style.width = "0px";
+    document.getElementById(`devSemiCircleId-${gameNameValue}`).style.width = "0px";
+  }
+
+  const handleSemiCircleEnterEffect = () => {
+    if(visibleGameToOthers){
+        document.getElementById(`publishSemiCircleId-${gameNameValue}`).style.width = "38px";
+        document.getElementById(`devSemiCircleId-${gameNameValue}`).style.width = "20px";
+    }
+    else{
+        document.getElementById(`publishSemiCircleId-${gameNameValue}`).style.width = "20px";
+        document.getElementById(`devSemiCircleId-${gameNameValue}`).style.width = "38px";
+    }
+  }
+
+
+  
   return (
     <>
       <div
         className={styles.card}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={handleMouseEnterCombined}
+        onMouseLeave={handleMouseLeaveCombined}
       >
         {/* Card Image */}
         <div className={styles.card_Image}>
           <i
-            style={{ display: cancleButtonFlag ? "flex" : "none" }}
+            style={{ display: cancleButtonFlag ? "flex" : "none"}}
             className={`fa fa-trash ${styles.clearIcon}`}
             onClick={() => deleteGame(gameNameValue)}
             title="Clear all filters"
@@ -117,6 +167,7 @@ function GameCards(props) {
 
         {/* Card Content */}
         <div className={styles.card_value}>
+        
           {/* Likes, Dislikes, and Downloads */}
           <div className={styles.gameNumbers}>
             <div className={styles.gameLikeDislike}><i className="fa fa-thumbs-up" onClick={handleLike}></i> {gameLikes}
@@ -126,8 +177,37 @@ function GameCards(props) {
 
           {/* Game Name */}
           <div className={styles.gameNameInfo}>
-            <h4 onClick={(e) => { handleClickGameName(e) }}>{gameNameValue}</h4>
-            <h5 onClick={(e) => { handleClickAuthorName(e) }}>{gameAuthorName}</h5>
+            <div className={styles.gameStatusCircle}>
+            <div
+              id={`devSemiCircleId-${gameNameValue}`}
+              className={`${styles.devSemiCircleOnCard} ${clickedDiv === "dev" ? "clicked" : ""}`}
+              style={{
+                opacity: getOpacity("dev"),
+                left: "0px",
+                width:"0px"
+              }}
+              onClick={() => handleDivClick("dev")}
+            >
+              D
+            </div>
+            <div
+              id={`publishSemiCircleId-${gameNameValue}`}
+              className={`${styles.publishSemiCircleOnCard} ${clickedDiv === "publish" ? "clicked" : ""
+                }`}
+              style={{
+                opacity: getOpacity("publish"),
+                left: "0px",
+                width:"0px"
+              }}
+              onClick={() => handleDivClick("publish")}
+            >
+              P
+            </div>
+            </div>
+            <div className={styles.gameNameValues}>
+              <h4 onClick={(e) => { handleClickGameName(e) }}>{gameNameValue}</h4>
+              <h5 onClick={(e) => { handleClickAuthorName(e) }}>{gameAuthorName}</h5>
+            </div>
           </div>
           {/* Platforms and Genre */}
           {gamePlatform.length > 0 && (

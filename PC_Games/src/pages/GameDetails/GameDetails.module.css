@@ -63,17 +63,30 @@
 
 /* ---------------------------------- */
 .FirstGameScreenshot {
-    background-position: center;
-    background-size: contain;
-    width: 50%;
+    width: 284px;
+    height: 250px;
+    border: 1px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #f8f8f8;
+}
+
+.ImageSS {     /* Image size : 612 x 569 works fine*/
+    width: 100%;
     height: 100%;
 }
 
 .SecondGameScreenshot {
-    background-position: center;
-    background-size: contain;
-    width: 50%;
-    height: 100%;
+    width: 284px;
+    height: 250px;
+    border: 1px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #f8f8f8;
 }
 
 /* ****************************** */

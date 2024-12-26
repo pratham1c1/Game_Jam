@@ -10,6 +10,7 @@ import CommonHeader from './components/PageHeader/CommonHeader'
 import SideNav from './components/BrowseSideNav/SideNav';
 import BrowseGames from './pages/BrowsePage/BrowseGames';
 import GameCards from './components/GameTemplate/GameCards';
+import PopupForm from './components/PopupForm/PopupForm';
 
 
 
@@ -21,7 +22,7 @@ function App_test() {
       <div className='AppPage'>
         <Router>
           <Routes>
-            <Route path="/" element={<UserGames />} />
+            <Route path="/" element={<GameCards />} />
           </Routes>
         </Router>
       </div>
