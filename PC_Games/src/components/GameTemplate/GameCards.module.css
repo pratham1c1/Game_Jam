@@ -256,26 +256,3 @@
     left: 0px;
     opacity: 1;
 }
-
-/* .card:hover .devSemiCircleOnCard {
-    width: 20px; 
-    opacity: 0.3; 
-}
-
-.card:hover .publishSemiCircleOnCard {
-    width: 38px; 
-    opacity: 0.3; 
-} */
-
-/* .card:hover .devSemiCircleOnCard .publishSemiCircleOnCard::after{
-    width: 0px;
-} */
-
-
-/* .card:hover .publishSemiCircleOnCard.clicked {
-    opacity: 1; /* Ensure it stays visible */
-/* } */
-/* 
-.card:hover .devSemiCircleOnCard.clicked {
-    opacity: 1; /* Ensure it stays visible */
-/* }  */

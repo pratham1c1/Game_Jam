@@ -22,7 +22,7 @@ function App_test() {
       <div className='AppPage'>
         <Router>
           <Routes>
-            <Route path="/" element={<GameCards />} />
+            <Route path="/" element={<UserGames />} />
           </Routes>
         </Router>
       </div>

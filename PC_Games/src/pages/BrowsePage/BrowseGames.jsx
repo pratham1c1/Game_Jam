@@ -110,6 +110,7 @@ function BrowseGames(props) {
                                     gameAuthorName={game.userName}
                                     setGameNameRedirFlag={setGameNameRedirFlag}
                                     setAuthorNameRedirFlag={setAuthorNameRedirFlag}
+                                    DashboardFlag={false}
                                     cancleFlag={false}
                                 />
                             ))

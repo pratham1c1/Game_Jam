@@ -3,21 +3,21 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./GameCards.module.css";
 
 function GameCards(props) {
-  const gameImage = props.gameImage || "/no_image.png"; // Default image
-  const gameNameValue = props.gameNameValue || "New Game";
-  const gameAuthorName = props.gameAuthorName || "PC";
-  const gameGenre = props.gameGenre || ["Action", "Horror", "Adventure"];
-  const gamePlatform = props.gamePlatform || ["Windows", "macOS", "Linux"];
-  const gameLikes = props.gameLikes || 100;
-  const gameDownload = props.gameDownload || 450;
-  const gameDescription = props.gameDescription || "This is description";
-  const gameFirstSs = props.gameFirstSs || null;
-  const gameSecondSs = props.gameSecondSs || null;
+  const gameImage = props?.gameImage !== undefined ?props.gameImage:"/no_image.png"; // Default image
+  const gameNameValue = props?.gameNameValue !== undefined ?props.gameNameValue:"New Game";
+  const gameAuthorName = props?.gameAuthorName !== undefined ?props.gameAuthorName : "PC";
+  const gameGenre = props?.gameGenre !== undefined ?props.gameGenre:["Action", "Horror", "Adventure"];
+  const gamePlatform = props?.gamePlatform !== undefined ?props.gamePlatform: ["Windows", "macOS", "Linux"];
+  const gameLikes = props?.gameLikes !== undefined ?props.gameLikes:100;
+  const gameDownload = props?.gameDownload !== undefined ?props.gameDownload: 450;
+  const gameDescription = props?.gameDescription !== undefined ?props.gameDescription:"This is a description";
+  const gameFirstSs = props?.gameFirstSs !== undefined ?props.gameFirstSs:null;
+  const gameSecondSs = props?.gameSecondSs !== undefined ?props.gameSecondSs:null;
   const setGameDeleteFlag = props.setGameDeleteFlag;
-  const cancleButtonFlag = props.cancleFlag;
+  const DashboardFlag = props?.DashboardFlag !== undefined ?props.DashboardFlag:true;  //To check if user is on Dashboard
   const setGameNameRedirFlag = props.setGameNameRedirFlag;
   const setAuthorNameRedirFlag = props.setAuthorNameRedirFlag;
-  const [visibleGameToOthers, setVisibleGameToOthers] = useState(props.visibleGameToOthers ?? true);
+  const [visibleGameToOthers, setVisibleGameToOthers] = useState(props.visibleGameToOthers ?? false);
   const [clickedDiv, setClickedDiv] = useState(null);
 
 
@@ -26,7 +26,7 @@ function GameCards(props) {
 
   // Delete Game
   const deleteGame = async (gameName) => {
-    if (cancleButtonFlag) {
+    if (DashboardFlag) {
       const confirmDelete = window.confirm(
         `Are you sure you want to delete "${gameName}"?`
       );
@@ -99,17 +99,32 @@ function GameCards(props) {
       </span>
     ));
 
+    const changePublishStatusAPI = async (gameName , publishStatus) => {
+      try{
+          const gameData = await axios.put(`http://localhost:8080/api/games/updatePublishStatue/${gameName}/${publishStatus}`);
+          console.log("Game publish status updated succesfully.");
+      }catch(e){
+        console.log("Error changing publish status : " , e);
+      }
+    }
+
     const handleDivClick = (divType) => {
-      setClickedDiv(divType);
-      setVisibleGameToOthers(divType === "publish");
-      if(divType === "dev"){
+      if(DashboardFlag){
+      if(divType === "dev" && clickedDiv != "dev"){
+        changePublishStatusAPI(gameNameValue,divType === "publish");
         document.getElementById(`publishSemiCircleId-${gameNameValue}`).style.width = "20px";
         document.getElementById(`devSemiCircleId-${gameNameValue}`).style.width = "38px";
+        setClickedDiv(divType);
+        setVisibleGameToOthers(divType === "publish");
       }
-      else{
+      else if(divType === "publish" && clickedDiv != "publish"){
+        changePublishStatusAPI(gameNameValue,divType === "publish");
         document.getElementById(`publishSemiCircleId-${gameNameValue}`).style.width = "38px";
         document.getElementById(`devSemiCircleId-${gameNameValue}`).style.width = "20px";
+        setClickedDiv(divType);
+        setVisibleGameToOthers(divType === "publish");
       }
+    }
     };
   
     const getOpacity = (type) => {
@@ -129,11 +144,15 @@ function GameCards(props) {
   };
 
   const handleSemiCircleLeaveEffect = () => {
+    if(DashboardFlag){
     document.getElementById(`publishSemiCircleId-${gameNameValue}`).style.width = "0px";
     document.getElementById(`devSemiCircleId-${gameNameValue}`).style.width = "0px";
+    }
   }
 
   const handleSemiCircleEnterEffect = () => {
+    console.log("The dashboard flag : " , DashboardFlag);
+    if(DashboardFlag){
     if(visibleGameToOthers){
         document.getElementById(`publishSemiCircleId-${gameNameValue}`).style.width = "38px";
         document.getElementById(`devSemiCircleId-${gameNameValue}`).style.width = "20px";
@@ -142,6 +161,7 @@ function GameCards(props) {
         document.getElementById(`publishSemiCircleId-${gameNameValue}`).style.width = "20px";
         document.getElementById(`devSemiCircleId-${gameNameValue}`).style.width = "38px";
     }
+  }
   }
 
 
@@ -156,7 +176,7 @@ function GameCards(props) {
         {/* Card Image */}
         <div className={styles.card_Image}>
           <i
-            style={{ display: cancleButtonFlag ? "flex" : "none"}}
+            style={{ display: DashboardFlag ? "flex" : "none"}}
             className={`fa fa-trash ${styles.clearIcon}`}
             onClick={() => deleteGame(gameNameValue)}
             title="Clear all filters"

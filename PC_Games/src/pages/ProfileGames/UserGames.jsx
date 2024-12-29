@@ -211,9 +211,9 @@ function UserGames() {
                                     gameAuthorName={userName}
                                     setGameNameRedirFlag={setGameNameRedirFlag}
                                     setAuthorNameRedirFlag={setAuthorNameRedirFlag}
-                                    cancleFlag={(loggedInUserName == userName)?true:false}
+                                    DashboardFlag={(loggedInUserName == userName)?true:false}
                                     setGameDeleteFlag={setGameDeleteFlag}
-                                    visibleGameToOthers={false}
+                                    visibleGameToOthers={game.publishStatus}
                             />
                         ))
                     ) : (
