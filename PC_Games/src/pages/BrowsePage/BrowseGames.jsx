@@ -17,6 +17,8 @@ function BrowseGames(props) {
     const [authorNameRedirFlag, setAuthorNameRedirFlag] = useState(false);
     const navigate = useNavigate();
     const [toggleSideNavbar, setToggleSideNavbar] =  useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [sortOptions, setSortOptions] = useState({ field: "gameName", order: "desc" }); //Default sort
 
 
     const handleRedirect = () => {
@@ -62,6 +64,33 @@ function BrowseGames(props) {
         }
     };
 
+    const sortGames = (games, options) => {
+        const { field, order } = options;
+        return [...games].sort((a, b) => {
+            const valA = a[field];
+            const valB = b[field];
+    
+            if (valA < valB) return order === "asc" ? -1 : 1;
+            if (valA > valB) return order === "asc" ? 1 : -1;
+            return 0;
+        });
+    };
+
+    const handleSortChange = (field) => {
+        setSortOptions((prevOptions) => ({
+            field,
+            order: prevOptions.field === field && prevOptions.order === "asc" ? "desc" : "asc",
+        }));
+    };
+
+    const sortedGames = sortGames(games, sortOptions);
+
+    const filterGames = sortedGames.filter((game) =>
+        game.gameName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    
+
+
     useEffect(() => {
         console.log("Fetching games to browse...");
         fetchGames();
@@ -87,27 +116,31 @@ function BrowseGames(props) {
                     <div className={styles.SearchSortFields}>
                         <div className={styles.SortFields}>
                             <h3>Sort by</h3>
-                            <button>Top Rated</button>
+                            <button onClick={() => handleSortChange("gameName")}>Top Rated</button>
                             <button>Top Seller</button>
                             <button>Most Popular</button>
                             <button>Most Recent</button>
                         </div>
                         <div className={styles.SearchField}>
                             <form action="/action_page.php">
-                                <input type="text" placeholder="Search.." name="search" />
+                                <input onChange={(e)=>{setSearchQuery(e.target.value)}} value={searchQuery} type="text" placeholder="Search.." name="search" />
                                     <button type="submit"><i className="fa fa-search"></i></button>
                             </form>
                             {/* <button onClick={displayForm}>Add</button> */}
                         </div>
                     </div>
                     <div id="mainPageId" className={toggleSideNavbar?styles.Games:styles.GamesCollapsed}>
-                        {games.length > 0 ? (
-                            games.map((game) => (
+                        {filterGames.length > 0 ? (
+                            filterGames.map((game) => (
                                 <GameCards
                                     key={game.gameId}
                                     gameImage={game.gameCoverImageUrl}
                                     gameNameValue={game.gameName}
                                     gameAuthorName={game.userName}
+                                    gameGenre = {game.gameGenre}
+                                    gameDownloadCount = {game.gameDownloadCount}
+                                    gameRating = {Math.round((game.gameRating/game.gameRaters) * 1e1) / 1e1}
+
                                     setGameNameRedirFlag={setGameNameRedirFlag}
                                     setAuthorNameRedirFlag={setAuthorNameRedirFlag}
                                     DashboardFlag={false}
@@ -115,7 +148,7 @@ function BrowseGames(props) {
                                 />
                             ))
                         ) : (
-                            <p>No games available.</p>
+                            <p style={{color:"black"}}>No games available.</p>
                         )}
                     </div>
                 </div>

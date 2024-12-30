@@ -79,6 +79,12 @@ function GameDetails(props) {
             console.error("Error fetching game file:", error);
             alert("Failed to load game file.");
         }
+        try{
+            const gameDownloadCount = await axios.put(`http://localhost:8080/api/games/updateGameDownloadCount/${gameName}`);
+            console.log(gameDownloadCount);
+        }catch(e){
+            console.log("Error updating gameDownloadCount", e);
+        }
     };
 
     const handlClickonUser = (event) => {

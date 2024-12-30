@@ -99,6 +99,8 @@ function UserGames() {
         } catch (error) {
             console.error("Error fetching games:", error);
             alert("Failed to load games.");
+        }finally{
+            
         }
     };
 
@@ -209,6 +211,10 @@ function UserGames() {
                                     gameImage={game.gameCoverImageUrl}
                                     gameNameValue={game.gameName}
                                     gameAuthorName={userName}
+                                    gameGenre = {game.gameGenre}
+                                    gameDownloadCount = {game.gameDownloadCount}
+                                    gameRating = {Math.round((game.gameRating/game.gameRaters) * 1e1) / 1e1}
+
                                     setGameNameRedirFlag={setGameNameRedirFlag}
                                     setAuthorNameRedirFlag={setAuthorNameRedirFlag}
                                     DashboardFlag={(loggedInUserName == userName)?true:false}

@@ -8,17 +8,20 @@ function GameCards(props) {
   const gameAuthorName = props?.gameAuthorName !== undefined ?props.gameAuthorName : "PC";
   const gameGenre = props?.gameGenre !== undefined ?props.gameGenre:["Action", "Horror", "Adventure"];
   const gamePlatform = props?.gamePlatform !== undefined ?props.gamePlatform: ["Windows", "macOS", "Linux"];
-  const gameLikes = props?.gameLikes !== undefined ?props.gameLikes:100;
-  const gameDownload = props?.gameDownload !== undefined ?props.gameDownload: 450;
+  const gameLikeCount = props?.gameLikeCount !== undefined ?props.gameLikeCount:100;
+  const gameRating = props?.gameRating !== undefined ?props.gameRating:4.5;
+  const gameDownloadCount = props?.gameDownloadCount !== undefined ?props.gameDownloadCount: 450;
   const gameDescription = props?.gameDescription !== undefined ?props.gameDescription:"This is a description";
   const gameFirstSs = props?.gameFirstSs !== undefined ?props.gameFirstSs:null;
   const gameSecondSs = props?.gameSecondSs !== undefined ?props.gameSecondSs:null;
   const setGameDeleteFlag = props.setGameDeleteFlag;
   const DashboardFlag = props?.DashboardFlag !== undefined ?props.DashboardFlag:true;  //To check if user is on Dashboard
+  const [gameLikeFlag,setGameLikeFlag] = useState(props.gameLikeFlag ?? false);
   const setGameNameRedirFlag = props.setGameNameRedirFlag;
   const setAuthorNameRedirFlag = props.setAuthorNameRedirFlag;
   const [visibleGameToOthers, setVisibleGameToOthers] = useState(props.visibleGameToOthers ?? false);
   const [clickedDiv, setClickedDiv] = useState(null);
+  const percentage = (gameRating/5)*100;
 
 
   const [showPopup, setShowPopup] = useState(false);
@@ -63,8 +66,10 @@ function GameCards(props) {
     setAuthorNameRedirFlag(e.target.textContent);
   }
 
-  const handleClickGameName = (e) => {
+  const handleClickGameName = async(e) => {
     console.log("Clicked on Game name ... : ");
+    const gameNameClickResult = await axios.put(`http://localhost:8080/api/games/updateGameViewCount/${gameNameValue}`);
+    console.log(gameNameClickResult);
     setGameNameRedirFlag(e.target.textContent);
   }
 
@@ -164,6 +169,18 @@ function GameCards(props) {
   }
   }
 
+  const handleLikeGame = (gameNameValue) => {
+    // console.log(`${gameNameValue} added successfully in Likedgame List.`);
+    console.log("gameLikeFlag : " , gameLikeFlag);
+    if(gameLikeFlag){
+      document.getElementById(`LikeGameIcon-${gameNameValue}`).style.webkitTextFillColor = "#777777";
+      setGameLikeFlag(false);
+    }
+    else{
+      document.getElementById(`LikeGameIcon-${gameNameValue}`).style.webkitTextFillColor = "#048348";
+      setGameLikeFlag(true);
+    }
+  }
 
   
   return (
@@ -175,6 +192,15 @@ function GameCards(props) {
       >
         {/* Card Image */}
         <div className={styles.card_Image}>
+          <i
+            style={{ 
+              WebkitTextFillColor: "#777777"
+            }}
+            className={`material-symbols-outlined ${styles.gameLikedIcon}`}
+            onClick={() => handleLikeGame(gameNameValue)}
+            id={`LikeGameIcon-${gameNameValue}`}
+            title="Add to favorite"
+          >bookmark_heart</i>
           <i
             style={{ display: DashboardFlag ? "flex" : "none"}}
             className={`fa fa-trash ${styles.clearIcon}`}
@@ -190,9 +216,9 @@ function GameCards(props) {
         
           {/* Likes, Dislikes, and Downloads */}
           <div className={styles.gameNumbers}>
-            <div className={styles.gameLikeDislike}><i className="fa fa-thumbs-up" onClick={handleLike}></i> {gameLikes}
+            <div className={styles.gameLikeDislike}><i className="fa fa-thumbs-up" onClick={handleLike}></i> {gameLikeCount}
               <i className="fa fa-thumbs-down" onClick={handleDislike}></i></div>
-            <div className={styles.gameDownloadsView}><i className="fa fa-download" onClick={handleDownload}></i> {gameDownload}</div>
+            <div className={styles.gameDownloadsView}><i className="fa fa-download" onClick={handleDownload}></i> {gameDownloadCount}</div>
           </div>
 
           {/* Game Name */}
@@ -227,6 +253,16 @@ function GameCards(props) {
             <div className={styles.gameNameValues}>
               <h4 onClick={(e) => { handleClickGameName(e) }}>{gameNameValue}</h4>
               <h5 onClick={(e) => { handleClickAuthorName(e) }}>{gameAuthorName}</h5>
+            </div>
+            <div className={styles.gameRatingIcon}
+              style={{
+                background: `linear-gradient(90deg, #ffdc0c ${percentage}%, #858585 ${percentage}%)`,
+                WebkitBackgroundClip: "text", // For applying background to text
+                WebkitTextFillColor: "transparent", // Ensures only text gets the gradient
+              }}
+            >
+              <i className="fa fa-star" onClick={handleDislike}></i>
+              <h6 style={{WebkitTextFillColor: "black"}}>{gameRating}</h6>
             </div>
           </div>
           {/* Platforms and Genre */}
