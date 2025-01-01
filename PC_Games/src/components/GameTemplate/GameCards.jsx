@@ -1,11 +1,13 @@
 import axios from "axios";
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./GameCards.module.css";
+import { unstable_setDevServerHooks } from "react-router-dom";
 
 function GameCards(props) {
   const gameImage = props?.gameImage !== undefined ?props.gameImage:"/no_image.png"; // Default image
   const gameNameValue = props?.gameNameValue !== undefined ?props.gameNameValue:"New Game";
   const gameAuthorName = props?.gameAuthorName !== undefined ?props.gameAuthorName : "PC";
+  const loggedInUser = props?.loggedInUser !== undefined ?props.loggedInUser : "PC";
   const gameGenre = props?.gameGenre !== undefined ?props.gameGenre:["Action", "Horror", "Adventure"];
   const gamePlatform = props?.gamePlatform !== undefined ?props.gamePlatform: ["Windows", "macOS", "Linux"];
   const gameLikeCount = props?.gameLikeCount !== undefined ?props.gameLikeCount:100;
@@ -14,15 +16,16 @@ function GameCards(props) {
   const gameDescription = props?.gameDescription !== undefined ?props.gameDescription:"This is a description";
   const gameFirstSs = props?.gameFirstSs !== undefined ?props.gameFirstSs:null;
   const gameSecondSs = props?.gameSecondSs !== undefined ?props.gameSecondSs:null;
+  const savedGameFlag = props.savedGameFlag !== undefined ?props.savedGameFlag:false;
+  const savedGameFlagDisplay = props?.savedGameFlagDisplay !== undefined ?props.savedGameFlagDisplay:false;
   const setGameDeleteFlag = props.setGameDeleteFlag;
   const DashboardFlag = props?.DashboardFlag !== undefined ?props.DashboardFlag:true;  //To check if user is on Dashboard
-  const [gameLikeFlag,setGameLikeFlag] = useState(props.gameLikeFlag ?? false);
+  const [gameLikeFlag,setGameLikeFlag] = useState(props.savedGameFlag ?? false);
   const setGameNameRedirFlag = props.setGameNameRedirFlag;
   const setAuthorNameRedirFlag = props.setAuthorNameRedirFlag;
   const [visibleGameToOthers, setVisibleGameToOthers] = useState(props.visibleGameToOthers ?? false);
   const [clickedDiv, setClickedDiv] = useState(null);
   const percentage = (gameRating/5)*100;
-
 
   const [showPopup, setShowPopup] = useState(false);
   const popupTimeout = useRef(null);
@@ -169,18 +172,26 @@ function GameCards(props) {
   }
   }
 
-  const handleLikeGame = (gameNameValue) => {
+  const handleLikeGame = async(gameNameValue) => {
     // console.log(`${gameNameValue} added successfully in Likedgame List.`);
     console.log("gameLikeFlag : " , gameLikeFlag);
     if(gameLikeFlag){
       document.getElementById(`LikeGameIcon-${gameNameValue}`).style.webkitTextFillColor = "#777777";
       setGameLikeFlag(false);
+      const LikeGameMessage = await axios.put(`http://localhost:8080/api/userGames/removeGameFromUserLikedGames/${loggedInUser}/${gameNameValue}`);
+      console.log(LikeGameMessage);
     }
     else{
       document.getElementById(`LikeGameIcon-${gameNameValue}`).style.webkitTextFillColor = "#048348";
       setGameLikeFlag(true);
+      const LikeGameMessage = await axios.put(`http://localhost:8080/api/userGames/addGameToUserLikedGames/${loggedInUser}/${gameNameValue}`);
+      console.log(LikeGameMessage);
     }
   }
+
+  useEffect(()=>{
+    setGameLikeFlag(props.savedGameFlag);
+  },[props.savedGameFlag]);
 
   
   return (
@@ -194,7 +205,8 @@ function GameCards(props) {
         <div className={styles.card_Image}>
           <i
             style={{ 
-              WebkitTextFillColor: "#777777"
+              WebkitTextFillColor:savedGameFlag? "#048348" : "#777777",
+              display: savedGameFlagDisplay?"flex":"none"
             }}
             className={`material-symbols-outlined ${styles.gameLikedIcon}`}
             onClick={() => handleLikeGame(gameNameValue)}

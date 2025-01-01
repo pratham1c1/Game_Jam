@@ -19,7 +19,7 @@ function BrowseGames(props) {
     const [toggleSideNavbar, setToggleSideNavbar] =  useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOptions, setSortOptions] = useState({ field: "gameName", order: "desc" }); //Default sort
-
+    const [userLikedGameList,setUserLikedGameList] = useState([]);
 
     const handleRedirect = () => {
         if (gameNameRedirFlag) {
@@ -61,6 +61,13 @@ function BrowseGames(props) {
         } catch (error) {
             console.error("Error fetching games:", error);
             // alert("Failed to load games.");
+        }
+        try{
+            const userLikedGames = await axios.get(`http://localhost:8080/api/userGames/getUserLikedGame/${loggedInUserName}`);
+            setUserLikedGameList(userLikedGames.data);
+        }
+        catch(error){
+            console.log("Error fetching Liked list : " , error);
         }
     };
 
@@ -116,9 +123,9 @@ function BrowseGames(props) {
                     <div className={styles.SearchSortFields}>
                         <div className={styles.SortFields}>
                             <h3>Sort by</h3>
-                            <button onClick={() => handleSortChange("gameName")}>Top Rated</button>
+                            <button onClick={() => handleSortChange("gameRating")}>Top Rated</button>
                             <button>Top Seller</button>
-                            <button>Most Popular</button>
+                            <button onClick={() => handleSortChange("gameDownloadCount")}>Most Popular</button>
                             <button>Most Recent</button>
                         </div>
                         <div className={styles.SearchField}>
@@ -141,6 +148,8 @@ function BrowseGames(props) {
                                     gameDownloadCount = {game.gameDownloadCount}
                                     gameRating = {Math.round((game.gameRating/game.gameRaters) * 1e1) / 1e1}
 
+                                    savedGameFlag = {userLikedGameList.includes(game.gameName)}
+                                    savedGameFlagDisplay = {loggedInUserName != game.userName}
                                     setGameNameRedirFlag={setGameNameRedirFlag}
                                     setAuthorNameRedirFlag={setAuthorNameRedirFlag}
                                     DashboardFlag={false}

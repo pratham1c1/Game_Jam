@@ -18,6 +18,7 @@ function UserGames() {
     const [headerRedirFlag, setHeaderRedirFlag] = useState(false);
     const [gameNameRedirFlag, setGameNameRedirFlag] = useState(false);
     const [authorNameRedirFlag, setAuthorNameRedirFlag] = useState(false);
+    const [userLikedGameList, setUserLikedGameList] = useState([]);
     const [formData, setFormData] = useState({
         gameName: "",
         gameDescription: "",
@@ -99,8 +100,14 @@ function UserGames() {
         } catch (error) {
             console.error("Error fetching games:", error);
             alert("Failed to load games.");
-        }finally{
-            
+        }
+        try{
+            const userLikedGames = await axios.get(`http://localhost:8080/api/userGames/getUserLikedGame/${loggedInUserName}`);
+            // console.log("The userLiked games : " , userLikedGames.data.includes("Night Demon"));
+            setUserLikedGameList(userLikedGames.data);
+        }
+        catch(error){
+            console.log("Error fetching Liked list : " , error);
         }
     };
 
@@ -215,6 +222,7 @@ function UserGames() {
                                     gameDownloadCount = {game.gameDownloadCount}
                                     gameRating = {Math.round((game.gameRating/game.gameRaters) * 1e1) / 1e1}
 
+                                    savedGameFlag = {true}
                                     setGameNameRedirFlag={setGameNameRedirFlag}
                                     setAuthorNameRedirFlag={setAuthorNameRedirFlag}
                                     DashboardFlag={(loggedInUserName == userName)?true:false}
