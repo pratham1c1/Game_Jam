@@ -20,6 +20,15 @@ function BrowseGames(props) {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOptions, setSortOptions] = useState({ field: "gameName", order: "desc" }); //Default sort
     const [userLikedGameList,setUserLikedGameList] = useState([]);
+    const [filterCriteria, setFilterCriteria] = useState({
+        gameGenre: [],
+        gamePlatform: [],
+        maxPrice: null,
+        beforeDate: null,
+        searchQuery: "",
+    });
+    
+    
 
     const handleRedirect = () => {
         if (gameNameRedirFlag) {
@@ -76,9 +85,8 @@ function BrowseGames(props) {
         return [...games].sort((a, b) => {
             const valA = a[field];
             const valB = b[field];
-    
-            if (valA < valB) return order === "asc" ? -1 : 1;
-            if (valA > valB) return order === "asc" ? 1 : -1;
+            if (valA < valB) return order === "asc" ? 1 : -1;
+            if (valA > valB) return order === "asc" ? -1 : 1;
             return 0;
         });
     };
@@ -90,12 +98,111 @@ function BrowseGames(props) {
         }));
     };
 
-    const sortedGames = sortGames(games, sortOptions);
+    const handleAddGenre = (genre) => {
+        if(genre){
+        setFilterCriteria((prev) => ({
+            ...prev,
+            gameGenre: genre, // Add a new genre
+        }));
+        }else{
+            setFilterCriteria((prev) => ({
+                ...prev,
+                gameGenre: [], // Add a empty genre
+            }));
+        }
+    };
+    const handleAddPlatform = (platforms) => {
+        console.log("The platforms : " , platforms);
+        if(platforms){
+        setFilterCriteria((prev) => ({
+            ...prev,
+            gamePlatform: platforms, // Add a new platform
+        }));
+        }else{
+            setFilterCriteria((prev) => ({
+                ...prev,
+                gamePlatform: [], // Add a empty platform
+            }));
+        }
+    };
 
-    const filterGames = sortedGames.filter((game) =>
-        game.gameName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const handleSearchQueryUpdate = (query) => {
+        setFilterCriteria((prev) => ({
+            ...prev,
+            searchQuery: query // Add a new genre
+        }));
+        setSearchQuery(query);
+    };
     
+    const handleRemoveGenre = (genre) => {
+        setFilterCriteria((prev) => ({
+            ...prev,
+            gameGenre: prev.gameGenre.filter((g) => g !== genre), // Remove a genre
+        }));
+    };
+    
+    const handleSetPrice = (price) => {
+        setFilterCriteria((prev) => ({
+            ...prev,
+            maxPrice: price, // Set max price
+        }));
+    };
+    const handleSetBeforeDate = (dateVal) => {
+        console.log("The date received : " , dateVal);
+        setFilterCriteria((prev) => ({
+            ...prev,
+            beforeDate: new Date(dateVal), // Set max date
+        }));
+    };
+
+    const clearAllCriteria = () => {
+        setFilterCriteria({
+            gameGenre : [],
+            gamePlatform: [],
+            maxPrice: null,
+            beforeDate: null,
+            searchQuery: "",
+        });
+        console.log("Clearing filters in BrowseGames ...");
+    }
+
+    const filteredGames = (games, criteria) => {
+        console.log("Criteria : " , criteria);
+        return games.filter((game) => {
+            // Filter by gameGenre if criteria provided
+            if (criteria.gameGenre.length > 0 && !criteria.gameGenre.some((genre) => game.gameGenre.includes(genre))) {
+                return false;
+            }
+            // Filter by gamePlatform if criteria provided
+            if (criteria.gamePlatform.length > 0 && !criteria.gamePlatform.some((platform) => game.gamePlatform.includes(platform))) {
+                return false;
+            }
+            // Filter by maxPrice
+            // console.log("The gamePrice : " , game.gamePrice , " & maxPrice : " , criteria.maxPrice);
+            if (criteria.maxPrice && game.gamePrice > criteria.maxPrice) {
+                return false;
+            }
+            // Filter by beforeDate
+            if (criteria.beforeDate && !(criteria.beforeDate && new Date((game.gameCreateDate).toString()) >= criteria.beforeDate)) {
+                return false;
+            }
+            // Filter by searchQuery
+            if (criteria.searchQuery && !(
+                game.gameName.toLowerCase().includes(criteria.searchQuery.toLowerCase()) ||
+                game.userName.toLowerCase().includes(criteria.searchQuery.toLowerCase()) ||
+                game.gamePlatform.some((platform) => platform.toLowerCase().includes(criteria.searchQuery.toLowerCase())) ||
+                game.gameGenre.some((genre) => genre.toLowerCase().includes(criteria.searchQuery.toLowerCase()))
+            )) {
+                return false;
+            }
+    
+            return true;
+        });
+    };
+    
+
+    const sortedGames = sortGames(games, sortOptions);
+    const filterGames = filteredGames(sortedGames,filterCriteria);    
 
 
     useEffect(() => {
@@ -112,25 +219,33 @@ function BrowseGames(props) {
     },[toggleSideNavbar]);
 
 
+
     return (
         <>
             <CommonHeader/>
             <div className={styles.MainDiv}>
                 <div className={styles.sideNavbar}>
-                    <SideNav setToggleSideNavbar={setToggleSideNavbar}/>
+                    <SideNav 
+                        setToggleSideNavbar={setToggleSideNavbar} 
+                        handleAddGenre={handleAddGenre} 
+                        clearAllCriteria={clearAllCriteria}
+                        handleAddPlatform={handleAddPlatform}
+                        handleSetPrice={handleSetPrice}
+                        handleSetBeforeDate={handleSetBeforeDate}
+                    />
                 </div>
                 <div className={styles.mainGames}>
                     <div className={styles.SearchSortFields}>
                         <div className={styles.SortFields}>
                             <h3>Sort by</h3>
                             <button onClick={() => handleSortChange("gameRating")}>Top Rated</button>
-                            <button>Top Seller</button>
+                            <button onClick={() => handleSortChange("gameIncome")}>Top Seller</button>
                             <button onClick={() => handleSortChange("gameDownloadCount")}>Most Popular</button>
-                            <button>Most Recent</button>
+                            <button onClick={() => handleSortChange("gameCreateDate")}>Most Recent</button>
                         </div>
                         <div className={styles.SearchField}>
                             <form action="/action_page.php">
-                                <input onChange={(e)=>{setSearchQuery(e.target.value)}} value={searchQuery} type="text" placeholder="Search.." name="search" />
+                                <input onChange={(e)=>{handleSearchQueryUpdate(e.target.value)}} value={searchQuery} type="text" placeholder="Search.." name="search" />
                                     <button type="submit"><i className="fa fa-search"></i></button>
                             </form>
                             {/* <button onClick={displayForm}>Add</button> */}
@@ -146,7 +261,9 @@ function BrowseGames(props) {
                                     gameAuthorName={game.userName}
                                     gameGenre = {game.gameGenre}
                                     gameDownloadCount = {game.gameDownloadCount}
-                                    gameRating = {Math.round((game.gameRating/game.gameRaters) * 1e1) / 1e1}
+                                    // gameRating = {Math.round((game.gameRatingCount/game.gameRaters) * 1e1) / 1e1}
+                                    gameRating = {game.gameRating}
+                                    gamePlatform = {game.gamePlatform}
 
                                     savedGameFlag = {userLikedGameList.includes(game.gameName)}
                                     savedGameFlagDisplay = {loggedInUserName != game.userName}

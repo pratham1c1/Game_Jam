@@ -5,7 +5,7 @@
     left: 0; */
     height: 100%;
     width: 100px;
-    background-color: #333;
+    background-color: #1f1e1d;
     color: white;
     overflow-x: hidden;
     transition: width 0.3s ease; /* Smooth open/close effect */
@@ -34,6 +34,7 @@
     z-index: 1001;
     height: 62px;
     padding-left: 10px;
+    margin-bottom: 30px;
 }
 
 /* Hamburger button */

@@ -220,7 +220,7 @@ function UserGames() {
                                     gameAuthorName={userName}
                                     gameGenre = {game.gameGenre}
                                     gameDownloadCount = {game.gameDownloadCount}
-                                    gameRating = {Math.round((game.gameRating/game.gameRaters) * 1e1) / 1e1}
+                                    gameRating = {game.gameRating}
 
                                     savedGameFlag = {true}
                                     setGameNameRedirFlag={setGameNameRedirFlag}
