@@ -34,6 +34,14 @@
         width: 630px;
     }
 }
+/* -----------------SearchIcon------------ */
+.searchIcon{
+    position: absolute;
+    top: 28px;
+    right: 314px;
+    font-size: 13px;
+    color: black;
+}
 
 .SearchField {
     width: 380px;
@@ -47,15 +55,8 @@
     height: 40px;
     font-size: 15px;
     border-radius: 9px;
-    padding-left: 17px;
+    padding-left: 31px;
     border: none;
-}
-
-.SearchField button{
-    width: 45px;
-    height: 35px;
-    margin-left: 15px;
-    border-radius: 15px;
 }
 
 .SortFields{
@@ -127,4 +128,3 @@ button {
     background-color: rebeccapurple;
     width: 100%;
 }
-

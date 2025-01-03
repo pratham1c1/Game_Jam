@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from './GameDetails.module.css'; // Import the CSS module
 import CommonHeader from "../../components/PageHeader/CommonHeader";
+import AddCommentIcon from '@mui/icons-material/AddComment';
+import CommentTemplate from "../../components/CommentTemplate/commentTemplate";
 
 function GameDetails(props) {
     const [gameInfo, setGameInfo] = useState(null);
@@ -12,9 +14,16 @@ function GameDetails(props) {
     const [gameFile, setGameFile] = useState(null);
     const [downloadUrl, setDownloadUrl] = useState(null);
     const location = useLocation();
-    const { gameName } = location?.state || {}; // props.gameName
+    // const gameName = location?.state || {}; // props.gameName
+    const gameName = "2nd Game";
     const loggedInUserName = location?.state?.loggedInUserName || "PC";
     const [userName, setUserName] = useState(null);
+    const [comments, setComments] = useState([
+        {id: 1735915550064, text: 'first comment'}]);
+    const [isAddingComment, setIsAddingComment] = useState(false);
+    const [newCommentIndex, setNewCommentIndex] = useState(null);
+
+
     const navigate = useNavigate();
 
     const fetchGames = async () => {
@@ -93,6 +102,53 @@ function GameDetails(props) {
         });
     };
 
+    // Add a new comment template
+    const handleAddComment = () => {
+        setIsAddingComment(true);
+    };
+    
+    const handleSaveComment = (text, index,cancelIndex) => {
+        console.log("The handleSaveComment text : " , text , " and Index: " , index , "cancelIndex: " , cancelIndex , " comments : " , comments);
+        if (index === undefined) {
+            console.log("This is in if");
+            const newComment = { id: Date.now(), text };
+            setComments((prev) => [newComment, ...prev]);
+        } else if(index !== undefined && cancelIndex == 1){
+            console.log("This is in else if => index : " , index , " and text : " , text);
+            const updatedComments = [...comments];
+            console.log("The previous text : " , updatedComments[index].text);
+            updatedComments[index].text = "t";
+            setComments(updatedComments);
+        }
+        else {
+            console.log("This is gettinig in else ....");
+            const updatedComments = [...comments];
+            updatedComments[index].text = text;
+            setComments(updatedComments);
+        }
+        setIsAddingComment(false);
+    };
+    
+    const handleCancelComment = (text , index) => {
+        console.log(" handleCancelComment is : ", text , " and index : " , index , " comment : " , comments);
+        setIsAddingComment(false);
+    };
+
+    const handleCancelCheck = (text , index) =>{
+        // console.log("This is check for cancel with text: " , text , " and the index : " , index);
+    }
+    
+    const handleDeleteComment = (index) => {
+        if (index === undefined) {
+            setIsAddingComment(false); // Remove the new comment form
+        } else {
+            setComments((prev) => prev.filter((_, i) => i !== index));
+        }
+    };
+    
+
+
+
     useEffect(() => {
         console.log("This is GameDetails useEffect ...");
         console.log("Testing gameName : ", location.state);
@@ -143,7 +199,40 @@ function GameDetails(props) {
                         </div>
                     </div>
                 </div>
-                <div className={styles.GameComments}></div>
+                <div className={styles.GameComments}>
+                    <div className={styles.GameCommentsActionButtons}>
+                        <h2>Comments</h2>
+                        <button className={styles.addCommentButton}>
+                            <AddCommentIcon sx={{ fontSize: 41 }} onClick={handleAddComment} />
+                        </button>
+                    </div>
+                    <div className={styles.GameCommentBox}>
+                        <div className={styles.gameCommentsContainer}>
+                            <div className={styles.gameComments}>
+                                {isAddingComment && (
+                                    <CommentTemplate
+                                        // onSave={(text) => handleSaveComment(text)}
+                                        onSave={(text) => handleSaveComment(text,undefined)}
+                                        onCancel={(text) => handleCancelComment(text)}
+                                        onDelete={() => handleDeleteComment(undefined)} // For new comment form
+                                    />
+                                )}
+                                {comments.map((comment, index) => (
+                                    <CommentTemplate
+                                        key={comment.id}
+                                        comment={comment}
+                                        // onSave={(text) => handleSaveComment(text, index)}
+                                        onSave={(text,index,cancelIndex) => handleSaveComment(text, index,cancelIndex)}
+                                        onEditCancel={handleCancelCheck()}
+                                        onDelete={() => handleDeleteComment(index)}
+                                        index = {index}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </>
     );

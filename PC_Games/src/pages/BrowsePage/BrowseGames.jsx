@@ -225,9 +225,9 @@ function BrowseGames(props) {
             <CommonHeader/>
             <div className={styles.MainDiv}>
                 <div className={styles.sideNavbar}>
-                    <SideNav 
-                        setToggleSideNavbar={setToggleSideNavbar} 
-                        handleAddGenre={handleAddGenre} 
+                    <SideNav
+                        setToggleSideNavbar={setToggleSideNavbar}
+                        handleAddGenre={handleAddGenre}
                         clearAllCriteria={clearAllCriteria}
                         handleAddPlatform={handleAddPlatform}
                         handleSetPrice={handleSetPrice}
@@ -246,7 +246,8 @@ function BrowseGames(props) {
                         <div className={styles.SearchField}>
                             <form action="/action_page.php">
                                 <input onChange={(e)=>{handleSearchQueryUpdate(e.target.value)}} value={searchQuery} type="text" placeholder="Search.." name="search" />
-                                    <button type="submit"><i className="fa fa-search"></i></button>
+                                    {/* <button type="submit"><i className="fa fa-search"></i></button> */}
+                                    <i className={`fa fa-search ${styles.searchIcon}`}></i>
                             </form>
                             {/* <button onClick={displayForm}>Add</button> */}
                         </div>
@@ -264,6 +265,7 @@ function BrowseGames(props) {
                                     // gameRating = {Math.round((game.gameRatingCount/game.gameRaters) * 1e1) / 1e1}
                                     gameRating = {game.gameRating}
                                     gamePlatform = {game.gamePlatform}
+                                    gameLikeCount = {game.gameLikeCount}
 
                                     savedGameFlag = {userLikedGameList.includes(game.gameName)}
                                     savedGameFlagDisplay = {loggedInUserName != game.userName}

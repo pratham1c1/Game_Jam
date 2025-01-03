@@ -207,7 +207,14 @@ function UserGames() {
                         <h3>{userName}</h3>
                     </div>
                     <div className={styles.ActionButtons}>
-                        <button style={{display:(loggedInUserName == userName)?"block":"none"}} onClick={displayForm}>Add</button>
+                        <button className={styles.gameAddIconButton} style={{display:(loggedInUserName == userName)?"flex":"none"}}>
+                        <i
+                            className={`material-symbols-outlined ${styles.gameAddIcon}`}
+                            onClick={displayForm}
+                            // onClick={() => handleLikeGame(gameNameValue)}
+                            // id={`LikeGameIcon-${gameNameValue}`}
+                            title="Add to favorite"
+                        >add_card</i></button>
                     </div>
                 </div>
                 <div id="mainPageId" className={styles.Games}>
@@ -222,7 +229,11 @@ function UserGames() {
                                     gameDownloadCount = {game.gameDownloadCount}
                                     gameRating = {game.gameRating}
 
-                                    savedGameFlag = {true}
+                                    gamePlatform = {game.gamePlatform}
+                                    gameLikeCount = {game.gameLikeCount}
+
+                                    savedGameFlag = {userLikedGameList.includes(game.gameName)}
+                                    savedGameFlagDisplay = {loggedInUserName != game.userName}
                                     setGameNameRedirFlag={setGameNameRedirFlag}
                                     setAuthorNameRedirFlag={setAuthorNameRedirFlag}
                                     DashboardFlag={(loggedInUserName == userName)?true:false}
