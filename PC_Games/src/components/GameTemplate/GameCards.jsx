@@ -2,9 +2,10 @@ import axios from "axios";
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./GameCards.module.css";
 import { unstable_setDevServerHooks } from "react-router-dom";
+import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 
 function GameCards(props) {
-  const gameImage = props?.gameImage !== undefined ?props.gameImage:"/no_image.png"; // Default image
+  const gameImage = props?.gameImage !== undefined ?props.gameImage:"/check_image.jpg"; // Default image
   const gameNameValue = props?.gameNameValue !== undefined ?props.gameNameValue:"New Game";
   const gameAuthorName = props?.gameAuthorName !== undefined ?props.gameAuthorName : "PC";
   const loggedInUser = props?.loggedInUser !== undefined ?props.loggedInUser : "PC";
@@ -17,10 +18,10 @@ function GameCards(props) {
   const gameFirstSs = props?.gameFirstSs !== undefined ?props.gameFirstSs:null;
   const gameSecondSs = props?.gameSecondSs !== undefined ?props.gameSecondSs:null;
   const savedGameFlag = props.savedGameFlag !== undefined ?props.savedGameFlag:false;
-  const savedGameFlagDisplay = props?.savedGameFlagDisplay !== undefined ?props.savedGameFlagDisplay:false;
+  const savedGameFlagDisplay = props?.savedGameFlagDisplay !== undefined ?props.savedGameFlagDisplay:true;
   const setGameDeleteFlag = props.setGameDeleteFlag;
-  const DashboardFlag = props?.DashboardFlag !== undefined ?props.DashboardFlag:true;  //To check if user is on Dashboard
-  const [gameLikeFlag,setGameLikeFlag] = useState(props.savedGameFlag ?? false);
+  const DashboardFlag = props?.DashboardFlag !== undefined ?props.DashboardFlag:false;  //To check if user is on Dashboard
+  const [gameLikeFlag,setGameLikeFlag] = useState(props.savedGameFlag ?? true);
   const setGameNameRedirFlag = props.setGameNameRedirFlag;
   const setAuthorNameRedirFlag = props.setAuthorNameRedirFlag;
   const [visibleGameToOthers, setVisibleGameToOthers] = useState(props.visibleGameToOthers ?? false);
@@ -54,10 +55,6 @@ function GameCards(props) {
   // Like and Dislike functionality
   const handleLike = () => {
     console.log("Liked the game:", gameNameValue);
-  };
-
-  const handleDislike = () => {
-    console.log("Disliked the game:", gameNameValue);
   };
 
   const handleDownload = () => {
@@ -173,16 +170,16 @@ function GameCards(props) {
   }
 
   const handleLikeGame = async(gameNameValue) => {
-    // console.log(`${gameNameValue} added successfully in Likedgame List.`);
+    console.log(`${gameNameValue} added successfully in Likedgame List.`);
     console.log("gameLikeFlag : " , gameLikeFlag);
     if(gameLikeFlag){
-      document.getElementById(`LikeGameIcon-${gameNameValue}`).style.webkitTextFillColor = "#777777";
+      document.getElementById(`LikeGameIcon-${gameNameValue}`).style.color = "#777777";
       setGameLikeFlag(false);
       const LikeGameMessage = await axios.put(`http://localhost:8080/api/userGames/removeGameFromUserLikedGames/${loggedInUser}/${gameNameValue}`);
       console.log(LikeGameMessage);
     }
     else{
-      document.getElementById(`LikeGameIcon-${gameNameValue}`).style.webkitTextFillColor = "#048348";
+      document.getElementById(`LikeGameIcon-${gameNameValue}`).style.color = "#048348";
       setGameLikeFlag(true);
       const LikeGameMessage = await axios.put(`http://localhost:8080/api/userGames/addGameToUserLikedGames/${loggedInUser}/${gameNameValue}`);
       console.log(LikeGameMessage);
@@ -203,16 +200,18 @@ function GameCards(props) {
       >
         {/* Card Image */}
         <div className={styles.card_Image}>
-          <i
-            style={{ 
-              WebkitTextFillColor:savedGameFlag? "#048348" : "#777777",
-              display: savedGameFlagDisplay?"flex":"none"
-            }}
-            className={`material-symbols-outlined ${styles.gameLikedIcon}`}
-            onClick={() => handleLikeGame(gameNameValue)}
-            id={`LikeGameIcon-${gameNameValue}`}
-            title="Add to favorite"
-          >bookmark_heart</i>
+          <BookmarkAddIcon
+          style={{
+            color: savedGameFlag? "#048348" : "#777777",
+            display: savedGameFlagDisplay?"flex":"none"
+          }}
+          className={styles.gameLikedIcon}
+          onClick={() => handleLikeGame(gameNameValue)}
+          id={`LikeGameIcon-${gameNameValue}`}
+          title="Add to favorite"
+          sx={{fontSize:25 , width:20}}
+          viewBox="9 0 7 24"
+          />
           <i
             style={{ display: DashboardFlag ? "flex" : "none"}}
             className={`fa fa-trash ${styles.clearIcon}`}
@@ -229,7 +228,7 @@ function GameCards(props) {
           {/* Likes, Dislikes, and Downloads */}
           <div className={styles.gameNumbers}>
             <div className={styles.gameLikeDislike}><i className="fa fa-thumbs-up" onClick={handleLike}></i> {gameLikeCount}
-              <i className="fa fa-thumbs-down" onClick={handleDislike}></i></div>
+            </div>
             <div className={styles.gameDownloadsView}><i className="fa fa-download" onClick={handleDownload}></i> {gameDownloadCount}</div>
           </div>
 
@@ -273,7 +272,7 @@ function GameCards(props) {
                 WebkitTextFillColor: "transparent", // Ensures only text gets the gradient
               }}
             >
-              <i className="fa fa-star" onClick={handleDislike}></i>
+              <i className="fa fa-star"></i>
               <h6 style={{WebkitTextFillColor: "black"}}>{gameRating}</h6>
             </div>
           </div>

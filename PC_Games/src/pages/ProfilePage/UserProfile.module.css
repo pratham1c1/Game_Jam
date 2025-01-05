@@ -1,0 +1,139 @@
+.ProfileContainer {
+    width: 60%;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  h3 {
+    text-align: center;
+    color: #444;
+  }
+  
+  .successMessage {
+    color: #28a745;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .errorMessage {
+    color: #dc3545;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .UserDetailsBox {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-height: 800px;
+    overflow-y: auto;
+  }
+  
+  .ProfileImageContainer {
+    text-align: center;
+    background-image: "\.check_image.jpg";
+  }
+  
+  .ProfileImage {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: scale-down;
+    border: 2px solid #ddd;
+    margin-bottom: 31px;
+    margin-top: 4px;
+  }
+
+  .ProFileImageInputs{
+    display: flex;
+  }
+
+  .ProfileImageName, .ProfileBackgroundImageName{
+    background-color: #000000ab;
+    color: white;
+    font-weight: bold;
+    border: none;
+  }
+  
+  .UserInfo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .FormRow {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 45%;
+  }
+  
+  .FormRowFull {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
+  }
+  
+  input,
+  textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    font-size: 14px;
+  }
+  
+  input:focus,
+  textarea:focus {
+    border-color: #24a0ed;
+    outline: none;
+  }
+
+  .formSubmitButton{
+    padding: 10px 20px;
+    margin-left: 300px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 116px;
+  }
+
+  .formVerifyButton{
+    width: 141px;
+    margin-left: 295px;
+    margin-top: 10px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .ResetPasswordSection {
+    margin-top: 20px;
+  }
+  
+  .ResetPasswordSection h4 {
+    color: #444;
+  }
+  
+  .resetPasswordSaveButton {
+    margin-top: 10px;
+    margin-left: 321px;
+    width: 86px;
+  }

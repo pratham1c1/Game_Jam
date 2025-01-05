@@ -145,8 +145,10 @@ button {
     height: 45px;
     background-color: #1f1e1d;
     border: none;
+    color: white;
 }
 .gameAddIconButton:hover{
-    background-color: #6868688c;
+    background-color: #484747b5;
+    color: #2fa92f;
     border: none;
 }

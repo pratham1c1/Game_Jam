@@ -12,6 +12,7 @@ import BrowseGames from './pages/BrowsePage/BrowseGames';
 import GameCards from './components/GameTemplate/GameCards';
 import PopupForm from './components/PopupForm/PopupForm';
 import CommentTemplate from './components/CommentTemplate/commentTemplate';
+import UserProfile from './pages/ProfilePage/UserProfile';
 
 
 
@@ -23,7 +24,7 @@ function App_test() {
       <div className='AppPage'>
         <Router>
           <Routes>
-            <Route path="/" element={<GameDetails />} />
+            <Route path="/" element={<UserProfile />} />
           </Routes>
         </Router>
       </div>

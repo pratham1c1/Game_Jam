@@ -5,6 +5,7 @@ import styles from './UserGames.module.css'; // Import the CSS module
 import axios from "axios";
 import PopupForm from '../../components/PopupForm/PopupForm';
 import CommonHeader from "../../components/PageHeader/CommonHeader";
+import AddCardIcon from '@mui/icons-material/AddCard';
 
 function UserGames() {
     const [games, setGames] = useState([]);
@@ -208,13 +209,12 @@ function UserGames() {
                     </div>
                     <div className={styles.ActionButtons}>
                         <button className={styles.gameAddIconButton} style={{display:(loggedInUserName == userName)?"flex":"none"}}>
-                        <i
-                            className={`material-symbols-outlined ${styles.gameAddIcon}`}
+                        <AddCardIcon 
+                            title="Add New Game"
                             onClick={displayForm}
-                            // onClick={() => handleLikeGame(gameNameValue)}
-                            // id={`LikeGameIcon-${gameNameValue}`}
-                            title="Add to favorite"
-                        >add_card</i></button>
+                            sx={{fontSize:40}}
+                        />
+                        </button>
                     </div>
                 </div>
                 <div id="mainPageId" className={styles.Games}>
