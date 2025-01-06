@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from './components/PageHeader/Header'
 import CommonHeader from './components/PageHeader/CommonHeader'
 import BrowseGames from './pages/BrowsePage/BrowseGames'
+import UserProfile from './pages/ProfilePage/UserProfile'
 
 function App() {
   const [count, setCount] = useState(0);
@@ -20,6 +21,7 @@ function App() {
             <Route path="/DashboardPage" element={<UserGames />} />
             <Route path="/GamePage" element={<GameDetails />} />
             <Route path="/BrowsePage" element={<BrowseGames />} />
+            <Route path="/profilePage" element={<UserProfile/>} />
           </Routes>
         </Router>
       </div>
