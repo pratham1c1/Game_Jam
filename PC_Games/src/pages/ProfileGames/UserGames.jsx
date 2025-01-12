@@ -25,6 +25,7 @@ function UserGames() {
         gameDescription: "",
         gameInstallInstruc: "",
         gameVideoLink: "",
+        gameGenre: "",
         gameCoverImage: null,
         gameFirstSs: null,
         gameSecondSs: null,
@@ -168,7 +169,15 @@ function UserGames() {
         }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleGameGenre = (selectedGameGenre) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            gameGenre : selectedGameGenre
+        }));
+        console.log("It is in handleGameGenre ... with value : " , selectedGameGenre);
+    };
+
+    const handleSubmit = async (e,selectedGameGenre,selectedGamePlateForms) => {
         e.preventDefault();
         const data = new FormData();
 
@@ -177,6 +186,8 @@ function UserGames() {
         data.append("gameVideoLink", formData.gameVideoLink);
         data.append("gameDescription", formData.gameDescription);
         data.append("gameInstallInstruc", formData.gameInstallInstruc);
+        data.append("gameGenre" , selectedGameGenre);
+        data.append("gamePlatform" , selectedGamePlateForms);
         if (formData.gameCoverImage) data.append("gameCoverImage", formData.gameCoverImage);
         if (formData.gameFirstSs) data.append("gameFirstSs", formData.gameFirstSs);
         if (formData.gameSecondSs) data.append("gameSecondSs", formData.gameSecondSs);
@@ -247,7 +258,7 @@ function UserGames() {
                 </div>
                 <div className={styles.UserForm} style={{ display: isPopupVisible ? 'block' : 'none' }}>
                     <div id="pagePopuId" ref={popupRef} className={styles.pagePopupForm}>
-                        <PopupForm setpopupDiv={setPopupVisible} formData={formData} setFormData={setFormData} resetFormData={resetFormData} handleChange={handleChange} handleSubmit={handleSubmit} handleFileChange={handleFileChange} fileInputRefs={fileInputRefs} />
+                        <PopupForm isPopupVisible={isPopupVisible} setpopupDiv={setPopupVisible} formData={formData} setFormData={setFormData} resetFormData={resetFormData} handleChange={handleChange} handleSubmit={handleSubmit} handleFileChange={handleFileChange} fileInputRefs={fileInputRefs} />
                     </div>
                 </div>
             </div>

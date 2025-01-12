@@ -10,7 +10,7 @@ function GameCards(props) {
   const gameAuthorName = props?.gameAuthorName !== undefined ?props.gameAuthorName : "PC";
   const loggedInUser = props?.loggedInUser !== undefined ?props.loggedInUser : "PC";
   const gameGenre = props?.gameGenre !== undefined ?props.gameGenre:["Action", "Horror", "Adventure"];
-  const gamePlatform = props?.gamePlatform !== undefined ?props.gamePlatform: ["Windows", "macOS", "Linux"];
+  const gamePlatform = (props?.gamePlatform !== undefined && props?.gamePlatform.length !== 0) ?props.gamePlatform: ["Windows", "macOS", "Linux"];
   const gameLikeCount = props?.gameLikeCount !== undefined ?props.gameLikeCount:100;
   const gameRating = props?.gameRating !== undefined ?props.gameRating:4.5;
   const gameDownloadCount = props?.gameDownloadCount !== undefined ?props.gameDownloadCount: 450;

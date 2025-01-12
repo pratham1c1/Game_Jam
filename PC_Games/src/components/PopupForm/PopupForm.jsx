@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./PopupForm.module.css";
 
 function PopupForm(props) {
+    // To reset the Game Genre selected
+    const isPopupVisible = props.isPopupVisible;
     const setpopupDiv = props.setpopupDiv;
     const formData = props.formData || {};
     const setFormData = props.setFormData;
@@ -13,6 +15,8 @@ function PopupForm(props) {
 
     const [genreList, setGenreList] = useState(["Action", "Adventure", "Strategy", "Puzzle", "Other"]);
     const [selectedGenres, setSelectedGenres] = useState([]);
+    const [gamePlatForm, setGamePlatForm] = useState(["Windows", "macOS", "Linux", "Android"]);
+    const [selectedGamePlateForms, setSelectedGamePlateForms] = useState([]);
 
     const closeDiv = () => {
         const popupDiv = document.getElementById("popupDivID");
@@ -24,6 +28,8 @@ function PopupForm(props) {
 
         if (resetFormData) resetFormData();
         if (setpopupDiv) setpopupDiv(0);
+        setSelectedGenres([]);
+        setGenreList(["Action", "Adventure", "Strategy", "Puzzle", "Other"]);
     };
 
     const renderPreview = (file) => {
@@ -40,11 +46,27 @@ function PopupForm(props) {
         setGenreList((prev) => [...prev, genre]);
     };
 
+    const handleGamePlatformSelect = (platform) => {
+        setSelectedGamePlateForms((prev) => [...prev , platform]);
+        setGamePlatForm((prev) => prev.filter((item)=> item !== platform));
+    }
+
+    const removeSelectedPlatform = (platform) => {
+        setSelectedGamePlateForms((prev) => prev.filter((item)=> item !== platform));
+        setGamePlatForm((prev) => [...prev , platform]);
+    }
+
+        // To reset the Game Genre selected
+    useEffect(()=>{
+        setSelectedGenres([]);
+        setGenreList(["Action", "Adventure", "Strategy", "Puzzle", "Other"]);
+    },[isPopupVisible]);
+
     return (
         <div>
             <div id="popupDivID" className={styles.popupDiv}>
                 <span onClick={closeDiv} className={styles.closeButton}>&#10006;</span>
-                <form onSubmit={handleSubmit} className={styles.popupForm}>
+                <form onSubmit={(e) => handleSubmit(e, String(selectedGenres), String(selectedGamePlateForms))} className={styles.popupForm}>
                     <div className={styles.formContainer}>
                         {/* Left Section */}
                         <div className={styles.leftSection}>
@@ -150,6 +172,40 @@ function PopupForm(props) {
                                         >
                                             {genre}
                                         </span>
+                                    ))}
+                                </div>
+                            </div>
+                            
+                            {/* Game Platform */}
+                            <label className={styles.formLabel} htmlFor="gamePlatform">Game Platforms:</label>
+                            <div className={styles.genreContainer}>
+                                <div className={styles.selectedGenres}>
+                                    {selectedGamePlateForms.map((platform) => (
+                                        <span
+                                            key={platform}
+                                            className={styles.genreBadge}
+                                            onClick={() => removeSelectedPlatform(platform)}
+                                        >
+                                            {platform === "Windows" && <i style={{fontSize:"13px"}} className="fa fa-windows"></i>}
+                                            {platform === "macOS" && <i style={{fontSize:"13px"}} className="fa fa-apple"></i>}
+                                            {platform === "Linux" && <i style={{fontSize:"13px"}} className="fa fa-linux"></i>}
+                                            {platform === "Android" && <i style={{fontSize:"13px"}} className="fa fa-android"></i>} &#10006;
+                                        </span>
+                                    ))}
+                                </div>
+                                <div className={styles.genreList}>
+                                    {gamePlatForm.map((platform) => (
+                                        <span
+                                            key={platform}
+                                            className={styles.genreOption}
+                                            onClick={() => handleGamePlatformSelect(platform)}
+                                        >
+                                            {platform === "Windows" && <i style={{fontSize:"13px"}} className="fa fa-windows"></i>}
+                                            {platform === "macOS" && <i style={{fontSize:"13px"}} className="fa fa-apple"></i>}
+                                            {platform === "Linux" && <i style={{fontSize:"13px"}} className="fa fa-linux"></i>}
+                                            {platform === "Android" && <i style={{fontSize:"13px"}} className="fa fa-android"></i>}
+                                        </span>
+                                        
                                     ))}
                                 </div>
                             </div>

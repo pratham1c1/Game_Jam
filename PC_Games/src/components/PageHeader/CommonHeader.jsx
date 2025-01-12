@@ -36,6 +36,13 @@ function CommonHeader(props) {
         // navigate("/AboutPage");
     }
 
+    const handleClickProfile = () => {
+        console.log("Navigating to Profile page ...");
+        navigate("/profilePage", {
+            state:{loggedInUserName:loggedInUserName}
+        });
+    }
+
     useEffect(() => {
         if (isDropdownVisible) {
             document.addEventListener("mousedown", closeDropdown);
@@ -74,7 +81,7 @@ function CommonHeader(props) {
                             <h3 onClick={toggleDropdown}>{loggedInUserName}</h3>
                             {isDropdownVisible && (
                                 <div className={styles.dropdown}>
-                                    <a href="#Profile">Profile</a>
+                                    <a onClick={handleClickProfile}>Profile</a>
                                     <a href="#Settings">Settings</a>
                                     <a href="#Logout">Log Out</a>
                                 </div>

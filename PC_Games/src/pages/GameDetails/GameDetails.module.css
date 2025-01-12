@@ -8,9 +8,8 @@
 }
 
 .GameName {
-    width: 362px;
+    width: 100%;
     position: relative;
-    left: 405px;
 }
 
 /* ---------------------------------------------------- */

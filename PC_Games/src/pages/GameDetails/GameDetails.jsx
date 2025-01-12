@@ -14,8 +14,8 @@ function GameDetails(props) {
     const [gameFile, setGameFile] = useState(null);
     const [downloadUrl, setDownloadUrl] = useState(null);
     const location = useLocation();
-    // const gameName = location?.state || {}; // props.gameName
-    const gameName = "2nd Game";
+    const gameName = location?.state.gameName || {}; // props.gameName
+    // const gameName = "2nd Game";
     const loggedInUserName = location?.state?.loggedInUserName || "PC";
     const [userName, setUserName] = useState(null);
     const [comments, setComments] = useState([
