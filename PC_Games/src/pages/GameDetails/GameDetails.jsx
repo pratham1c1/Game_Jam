@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState , useRef} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from './GameDetails.module.css'; // Import the CSS module
 import CommonHeader from "../../components/PageHeader/CommonHeader";
@@ -15,13 +15,24 @@ function GameDetails(props) {
     const [downloadUrl, setDownloadUrl] = useState(null);
     const location = useLocation();
     const gameName = location?.state.gameName || {}; // props.gameName
+    const [gameDescription , setGameDescription] = useState("Loading ...");
+    const [gameInstallInstruction , setGameInstallInstruction] = useState("Loading ...");
     // const gameName = "2nd Game";
     const loggedInUserName = location?.state?.loggedInUserName || "PC";
     const [userName, setUserName] = useState(null);
     const [comments, setComments] = useState([
-        {id: 1735915550064, text: 'first comment'}]);
+        { id: 1735915550064, text: 'first comment' }]);
     const [isAddingComment, setIsAddingComment] = useState(false);
     const [newCommentIndex, setNewCommentIndex] = useState(null);
+    const [gameModify, setGameModify] = useState(true);
+    const fileInputRefs = useRef({});
+    // Update Info flags
+    const [fileUpdateFlag , setFileUpdateFlag] = useState(false);
+    const [gameCoverImageUpdateFlag , setGameCoverImageUpdateFlag] = useState(false);
+    const [gameFirstSsUpdateFlag , setGameFirstSsUpdateFlag] = useState(false);
+    const [gameSecondSsUpdateFlag , setGameSecondSsUpdateFlag] = useState(false);
+    const [gameDescUpdateFlag , setGameDescUpdateFlag] = useState(false);
+    const [gameInstallInstrUpdateFlag , setGameInstallInstrUpdateFlag] = useState(false);
 
 
     const navigate = useNavigate();
@@ -42,7 +53,7 @@ function GameDetails(props) {
                 ? `data:image/png;base64,${response.data.gameCoverImage.data}` // Use the base64 image if available
                 : `/no_image.png`; // Fallback to the public 'no_image.png'
             setGameCoverImage(gamesWithImageURL);
-            
+
             // Set other game images
             setGameFirstSs(response.data.gameFirstScreenshot && response.data.gameFirstScreenshot.data
                 ? `data:image/png;base64,${response.data.gameFirstScreenshot.data}`
@@ -52,6 +63,8 @@ function GameDetails(props) {
                 ? `data:image/png;base64,${response.data.gameSecondScreenshot.data}`
                 : `/no_image.png`);
             setUserName(response.data.userName);
+            setGameDescription(response.data.gameDescription);
+            setGameInstallInstruction(response.data.gameInstallInstruction);
         } catch (error) {
             console.error("Error fetching games:", error);
             alert("Failed to load games.");
@@ -88,10 +101,10 @@ function GameDetails(props) {
             console.error("Error fetching game file:", error);
             alert("Failed to load game file.");
         }
-        try{
+        try {
             const gameDownloadCount = await axios.put(`http://localhost:8080/api/games/updateGameDownloadCount/${gameName}`);
             console.log(gameDownloadCount);
-        }catch(e){
+        } catch (e) {
             console.log("Error updating gameDownloadCount", e);
         }
     };
@@ -106,17 +119,17 @@ function GameDetails(props) {
     const handleAddComment = () => {
         setIsAddingComment(true);
     };
-    
-    const handleSaveComment = (text, index,cancelIndex) => {
-        console.log("The handleSaveComment text : " , text , " and Index: " , index , "cancelIndex: " , cancelIndex , " comments : " , comments);
+
+    const handleSaveComment = (text, index, cancelIndex) => {
+        console.log("The handleSaveComment text : ", text, " and Index: ", index, "cancelIndex: ", cancelIndex, " comments : ", comments);
         if (index === undefined) {
             console.log("This is in if");
             const newComment = { id: Date.now(), text };
             setComments((prev) => [newComment, ...prev]);
-        } else if(index !== undefined && cancelIndex == 1){
-            console.log("This is in else if => index : " , index , " and text : " , text);
+        } else if (index !== undefined && cancelIndex == 1) {
+            console.log("This is in else if => index : ", index, " and text : ", text);
             const updatedComments = [...comments];
-            console.log("The previous text : " , updatedComments[index].text);
+            console.log("The previous text : ", updatedComments[index].text);
             updatedComments[index].text = "t";
             setComments(updatedComments);
         }
@@ -128,16 +141,16 @@ function GameDetails(props) {
         }
         setIsAddingComment(false);
     };
-    
-    const handleCancelComment = (text , index) => {
-        console.log(" handleCancelComment is : ", text , " and index : " , index , " comment : " , comments);
+
+    const handleCancelComment = (text, index) => {
+        console.log(" handleCancelComment is : ", text, " and index : ", index, " comment : ", comments);
         setIsAddingComment(false);
     };
 
-    const handleCancelCheck = (text , index) =>{
+    const handleCancelCheck = (text, index) => {
         // console.log("This is check for cancel with text: " , text , " and the index : " , index);
     }
-    
+
     const handleDeleteComment = (index) => {
         if (index === undefined) {
             setIsAddingComment(false); // Remove the new comment form
@@ -145,7 +158,51 @@ function GameDetails(props) {
             setComments((prev) => prev.filter((_, i) => i !== index));
         }
     };
+
+    const handleModifyClick = () => {
+        console.log("Clicked on Modify ...");
+        setGameModify((prev) => !prev);
+    }
+
+    const handleGameDescriptionChange = (e) => {
+        setGameDescription(e.target.value);
+        setGameDescUpdateFlag(true);
+    }
+
+    const handleGameInstallInstructionChange =(e) => {
+        setGameInstallInstruction(e.target.value);
+        setGameInstallInstrUpdateFlag(true);
+    }
+
+    const handleFileChange = (e,fieldName) => {
+        const file = e.target.files[0];
+        console.log("The file : " , file);
+        setFileUpdateFlag(true);
+    }
+
+    const handleGameFirstSsChange = (e) => {
+        setGameFirstSs(URL.createObjectURL(e.target.files[0]));
+        setGameFirstSsUpdateFlag(true);
+    }
+
+    const handleGameCoverImageChange = (e) => {
+        setGameCoverImage(URL.createObjectURL(e.target.files[0]));
+        setGameCoverImageUpdateFlag(true);
+    }
+
+    const handleGameSecondSsChange = (e) => {
+        setGameSecondSs(URL.createObjectURL(e.target.files[0]));
+        setGameSecondSsUpdateFlag(true);
+    }
+
+    const handleSaveClick = (e) => {
+        setGameModify((prev) => !prev);
+        console.log("Saving the updated values ");
+        // API call
+        
+    }
     
+
 
 
 
@@ -165,9 +222,12 @@ function GameDetails(props) {
 
     return (
         <>
-            <CommonHeader/>
+            <CommonHeader />
             <div className={styles.GamePage} style={{ backgroundImage: `url(${gameCoverImage})` }}>
-                <div className={styles.GameName}><h1>{gameName}</h1></div>
+                {gameModify ? (<><div className={styles.GameName}>
+                    <button className={styles.ModifyButton} style={{display:loggedInUserName === userName ? "block":"none"}} onClick={handleModifyClick}>Modify</button>
+                    <h1>{gameName}</h1>
+                </div>
                 <div className={styles.GameInfo}>
                     <div className={styles.GameImages}>
                         <div className={styles.gameCoverImage} style={{ backgroundImage: `url(${gameCoverImage})` }}></div>
@@ -199,39 +259,151 @@ function GameDetails(props) {
                         </div>
                     </div>
                 </div>
-                <div className={styles.GameComments}>
-                    <div className={styles.GameCommentsActionButtons}>
-                        <h2>Comments</h2>
-                        <button className={styles.addCommentButton}>
-                            <AddCommentIcon sx={{ fontSize: 41 }} onClick={handleAddComment} />
-                        </button>
-                    </div>
-                    <div className={styles.GameCommentBox}>
-                        <div className={styles.gameCommentsContainer}>
-                            <div className={styles.gameComments}>
-                                {isAddingComment && (
-                                    <CommentTemplate
-                                        // onSave={(text) => handleSaveComment(text)}
-                                        onSave={(text) => handleSaveComment(text,undefined)}
-                                        onCancel={(text) => handleCancelComment(text)}
-                                        onDelete={() => handleDeleteComment(undefined)} // For new comment form
-                                    />
-                                )}
-                                {comments.map((comment, index) => (
-                                    <CommentTemplate
-                                        key={comment.id}
-                                        comment={comment}
-                                        // onSave={(text) => handleSaveComment(text, index)}
-                                        onSave={(text,index,cancelIndex) => handleSaveComment(text, index,cancelIndex)}
-                                        onEditCancel={handleCancelCheck()}
-                                        onDelete={() => handleDeleteComment(index)}
-                                        index = {index}
-                                    />
-                                ))}
+                    <div className={styles.GameComments}>
+                        <div className={styles.GameCommentsActionButtons}>
+                            <h2>Comments</h2>
+                            <button className={styles.addCommentButton}>
+                                <AddCommentIcon sx={{ fontSize: 41 }} onClick={handleAddComment} />
+                            </button>
+                        </div>
+                        <div className={styles.GameCommentBox}>
+                            <div className={styles.gameCommentsContainer}>
+                                <div className={styles.gameComments}>
+                                    {isAddingComment && (
+                                        <CommentTemplate
+                                            // onSave={(text) => handleSaveComment(text)}
+                                            onSave={(text) => handleSaveComment(text, undefined)}
+                                            onCancel={(text) => handleCancelComment(text)}
+                                            onDelete={() => handleDeleteComment(undefined)} // For new comment form
+                                        />
+                                    )}
+                                    {comments.map((comment, index) => (
+                                        <CommentTemplate
+                                            key={comment.id}
+                                            comment={comment}
+                                            // onSave={(text) => handleSaveComment(text, index)}
+                                            onSave={(text, index, cancelIndex) => handleSaveComment(text, index, cancelIndex)}
+                                            onEditCancel={handleCancelCheck()}
+                                            onDelete={() => handleDeleteComment(index)}
+                                            index={index}
+                                        />
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </>) :
+                    (<><div className={styles.GameName}>
+                        <button className={styles.SaveButton} onClick={handleSaveClick}>Save</button>
+                        <h1>{gameName}</h1>
+                    </div>
+                    <div className={styles.GameInfo}>
+                        <div className={styles.GameImages}>
+                            <div className={styles.gameCoverImage} style={{border: "#3a657a57 4px solid"}}><img className={styles.ImageSS} src={gameCoverImage}></img></div>
+                            <input
+                                className={styles.ImageInputFields}
+                                type="file"
+                                id="gameCoverImage"
+                                name="gameCoverImage"
+                                accept="image/*"
+                                ref={(input) => fileInputRefs?.current && (fileInputRefs.current["gameCoverImage"] = input)}
+                                onChange={(e) => handleGameCoverImageChange(e)}
+                            />
+                            <div className={styles.GameScreenshots}>
+                                <div className={styles.FirstGameSsDiv}>
+                                <div className={styles.FirstGameScreenshot} style={{border: "#3a657a57 4px solid"}}><img className={styles.ImageSS} src={gameFirstSs}></img></div>
+                                <input
+                                    className={styles.ImageInputFields}
+                                    type="file"
+                                    id="gameFirstSs"
+                                    name="gameFirstSs"
+                                    accept="image/*"
+                                    ref={(input) => fileInputRefs?.current && (fileInputRefs.current["gameFirstSs"] = input)}
+                                    onChange={(e) => handleGameFirstSsChange(e)}
+                                />
+                                </div>
+                                <div className={styles.SecondGameSsDiv}>
+                                <div className={styles.SecondGameScreenshot} style={{border: "#3a657a57 4px solid"}}><img className={styles.ImageSS} src={gameSecondSs}></img></div>
+                                <input
+                                    className={styles.ImageInputFields}
+                                    type="file"
+                                    id="gameSecondSs"
+                                    name="gameSecondSs"
+                                    accept="image/*"
+                                    ref={(input) => fileInputRefs?.current && (fileInputRefs.current["gameSecondSs"] = input)}
+                                    onChange={(e) => handleGameSecondSsChange(e)}
+                                />
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles.GameDetailsInfo}>
+                            <h3 className={styles.GameInfoH3}>Game Name: {gameInfo?.gameName || "Loading..."}</h3>
+                            <h3 className={styles.GameInfoH3} onClick={handlClickonUser}>Game Author: {userName || "Loading..."}</h3>
+                            <div className={styles.ScrollableTextArea}>
+                                <h3 style={{color:"#aae2ff"}}>Description:</h3>
+                                <textarea
+                                    value={gameDescription || "The best game that you never played before"}
+                                    name="gameDescription"
+                                    onChange={handleGameDescriptionChange}
+                                />
+                            </div>
+                            <div className={styles.ScrollableTextArea}>
+                                <h3 style={{color:"#aae2ff"}}>Install Instruction:</h3>
+                                <textarea
+                                    value={gameInstallInstruction || "Download the game."}
+                                    name="gameInstallInstruction"
+                                    onChange={handleGameInstallInstructionChange}
+                                />
+                            </div>
+                            <div className={styles.GameHeader} style={{marginTop : "20px"}}>
+                                <label className={styles.formLabel} htmlFor="gameFile" style={{color:"#aae2ff"}}>Game File (ZIP):</label>
+                                <input
+                                    className={styles.ImageInputFields}
+                                    type="file"
+                                    id="gameFile"
+                                    name="gameFile"
+                                    accept=".zip"
+                                    ref={(input) => fileInputRefs?.current && (fileInputRefs.current["gameFile"] = input)}
+                                    onChange={(e) => handleFileChange(e, "gameFile")}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                        <div className={styles.GameComments}>
+                            <div className={styles.GameCommentsActionButtons}>
+                                <h2>Comments</h2>
+                                <button className={styles.addCommentButton}>
+                                    <AddCommentIcon sx={{ fontSize: 41 }} onClick={handleAddComment} />
+                                </button>
+                            </div>
+                            <div className={styles.GameCommentBox}>
+                                <div className={styles.gameCommentsContainer}>
+                                    <div className={styles.gameComments}>
+                                        {isAddingComment && (
+                                            <CommentTemplate
+                                                // onSave={(text) => handleSaveComment(text)}
+                                                onSave={(text) => handleSaveComment(text, undefined)}
+                                                onCancel={(text) => handleCancelComment(text)}
+                                                onDelete={() => handleDeleteComment(undefined)} // For new comment form
+                                            />
+                                        )}
+                                        {comments.map((comment, index) => (
+                                            <CommentTemplate
+                                                key={comment.id}
+                                                comment={comment}
+                                                // onSave={(text) => handleSaveComment(text, index)}
+                                                onSave={(text, index, cancelIndex) => handleSaveComment(text, index, cancelIndex)}
+                                                onEditCancel={handleCancelCheck()}
+                                                onDelete={() => handleDeleteComment(index)}
+                                                index={index}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </>)
+                }
 
             </div>
         </>
